@@ -20,3 +20,11 @@ class ProviderError(WorkflowError):
 
 class StepError(WorkflowError):
     pass
+
+
+class BudgetError(WorkflowError):
+    pass
+
+
+class SafetyError(WorkflowError):
+    pass

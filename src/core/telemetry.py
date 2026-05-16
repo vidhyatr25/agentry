@@ -71,6 +71,14 @@ class Telemetry:
             "calls": len(self.events),
         }
 
+    def over_budget(self, max_cost_usd=0.0, max_tokens=0):
+        totals = self.totals()
+        if max_cost_usd and totals["cost_usd"] > max_cost_usd:
+            return f"cost ${totals['cost_usd']:.4f} exceeded cap ${max_cost_usd}"
+        if max_tokens and totals["total_tokens"] > max_tokens:
+            return f"tokens {totals['total_tokens']} exceeded cap {max_tokens}"
+        return None
+
     def persist(self, path):
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)

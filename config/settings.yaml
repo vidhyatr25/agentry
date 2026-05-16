@@ -2,6 +2,10 @@ runtime:
   retries: 1
   retry_backoff_sec: 8
 
+budget:
+  max_cost_usd: 1.00
+  max_tokens: 0
+
 publishing:
   default_publisher: local
 
