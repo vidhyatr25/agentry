@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "provider:image": [
     "gemini_image",
@@ -45,6 +44,3 @@
     "audio.silence"
   ]
 }
-=======
-{}
->>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
