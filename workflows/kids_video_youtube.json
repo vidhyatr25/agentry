@@ -63,22 +63,38 @@
         "llm": "llm_default",
         "audience": "kids aged 4-8",
         "theme": "fun educational stories about nature, animals, space and kindness",
-        "count": 6
+        "count": 6,
+        "news_feed": "",
+        "system": "You are a kids content strategist focused on safety and curiosity.",
+        "prompt": "You plan a children's video channel for {{audience}}. Theme: {{theme}}. {{news_context}}\nPropose {{count}} fresh, safe, highly clickable video topic ideas that teach something positive. Avoid anything scary, branded, or unsafe."
       }
     },
     {
       "type": "pick_subject",
-      "params": { "llm": "llm_default", "audience": "kids aged 4-8" }
+      "params": {
+        "llm": "llm_default",
+        "audience": "kids aged 4-8",
+        "system": "You are a children's storyteller and educator.",
+        "prompt": "From these topics: {{topics}}\nPick the single best one for {{audience}} and build a creative brief: a catchy working title, the core learning goal, the emotional hook, and a warm narration tone."
+      }
     },
     {
       "type": "write_script",
-      "params": { "llm": "llm_default", "scene_count": 7, "words_target": 140 }
+      "params": {
+        "llm": "llm_default",
+        "scene_count": 7,
+        "words_target": 140,
+        "system": "You write safe, warm, age-appropriate kids scripts.",
+        "prompt": "Write a narrated short video script for children.\nTitle: {{subject.title}}\nLearning goal: {{subject.learning_goal}}\nHook: {{subject.hook}}\nTone: {{subject.tone}}\nTotal narration about {{words_target}} words across {{scene_count}} scenes. Each scene: one or two short spoken sentences and a vivid visual description. Open with the hook in the first sentence. End with a friendly call to subscribe."
+      }
     },
     {
       "type": "build_visual_prompts",
       "params": {
         "llm": "llm_default",
-        "style": "bright 3D Pixar-style cartoon, soft cinematic lighting, rounded shapes, cheerful palette, child friendly"
+        "style": "bright 3D Pixar-style cartoon, soft cinematic lighting, rounded shapes, cheerful palette, child friendly",
+        "system": "You are a prompt engineer for consistent kids illustrations.",
+        "prompt": "Global art style: {{style}}. Keep characters and palette consistent.\nFor each scene visual below, write a detailed image-generation prompt and a very short on-screen caption (max 8 words).\nScenes: {{scene_descriptions}}"
       }
     },
     {
@@ -103,7 +119,9 @@
         "llm": "llm_default",
         "platform": "youtube_shorts",
         "max_tags": 15,
-        "keyword_seed": ["kids learning", "story time", "educational cartoon", "kids shorts"]
+        "keyword_seed": ["kids learning", "story time", "educational cartoon", "kids shorts"],
+        "system": "You are a YouTube growth and SEO specialist for kids channels.",
+        "prompt": "Create {{platform}} SEO metadata for a kids short video.\nWorking title: {{title}}\nSummary: {{summary}}\nSeed keywords: {{keyword_seed}}\nRules (2026 Shorts best practice): the primary search keyword MUST be in the first 40 characters of the title; title under 70 chars, curiosity-driven, max 1 emoji, no false clickbait. Description: a strong 1-line hook, a 3-5 sentence keyword-rich summary, then exactly 3-5 niche hashtags plus #Shorts (never more than 5 total hashtags). Provide {{max_tags}} lowercase search tags. hashtags list: the same 3-5 niche tags plus #Shorts, each starting with #. Strictly family-safe."
       }
     },
     {

@@ -3,8 +3,21 @@ import time
 from pathlib import Path
 
 from ..core.factory import build_provider
+from ..core.prompt import resolve_prompt
 from ..core.registry import step
 from ..core.step import Step
+
+DEFAULT_META_SYSTEM = "You are a YouTube growth and SEO specialist for kids channels."
+DEFAULT_META_PROMPT = (
+    "Create {{platform}} SEO metadata for a kids short video.\n"
+    "Working title: {{title}}\nSummary: {{summary}}\nSeed keywords: {{keyword_seed}}\n"
+    "Rules (2026 Shorts best practice): the primary search keyword MUST be in the first "
+    "40 characters of the title; title under 70 chars, curiosity-driven, max 1 emoji, no "
+    "false clickbait. Description: a strong 1-line hook, a 3-5 sentence keyword-rich "
+    "summary, then exactly 3-5 niche hashtags plus #Shorts (never more than 5 total "
+    "hashtags). Provide {{max_tags}} lowercase search tags. hashtags list: the same 3-5 "
+    "niche tags plus #Shorts, each starting with #. Strictly family-safe."
+)
 
 
 @step("optimize_metadata")
@@ -17,18 +30,15 @@ class OptimizeMetadata(Step):
         max_tags = int(self.param(ctx, "max_tags", 15))
         keyword_seed = self.param(ctx, "keyword_seed", [])
         summary = " ".join(s.get("narration", "") for s in scenes)[:800]
-        prompt = (
-            f"Create {platform} SEO metadata for a kids short video.\n"
-            f"Working title: {subject.get('title')}\nSummary: {summary}\n"
-            f"Seed keywords: {keyword_seed}\n"
-            f"Rules (2026 Shorts best practice): the primary search keyword MUST be in "
-            f"the first 40 characters of the title; title under 70 chars, curiosity-driven, "
-            f"max 1 emoji, no false clickbait. Description: a strong 1-line hook, a 3-5 "
-            f"sentence keyword-rich summary, then exactly 3-5 niche hashtags plus #Shorts "
-            f"(never more than 5 total hashtags). Provide {max_tags} lowercase search tags. "
-            f"hashtags list: the same 3-5 niche tags plus #Shorts, each starting with #. "
-            f"Strictly family-safe."
-        )
+        variables = {
+            "platform": platform,
+            "title": subject.get("title"),
+            "summary": summary,
+            "keyword_seed": keyword_seed,
+            "max_tags": max_tags,
+        }
+        prompt = resolve_prompt(self, ctx, "prompt", DEFAULT_META_PROMPT, variables)
+        system = resolve_prompt(self, ctx, "system", DEFAULT_META_SYSTEM, variables)
         dry_default = {
             "title": (subject.get("title") or "A Tiny Seed's Big Adventure") + " 🌱",
             "description": "A gentle story for curious kids.\n\n#kids #learning #story",
@@ -39,7 +49,7 @@ class OptimizeMetadata(Step):
             prompt,
             {"title": "str", "description": "str", "tags": ["str"], "hashtags": ["str"]},
             dry_default,
-            system="You are a YouTube growth and SEO specialist for kids channels.",
+            system=system,
             step="optimize_metadata",
         )
         meta.setdefault("tags", dry_default["tags"])
