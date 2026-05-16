@@ -1,0 +1,37 @@
+name: 🧩 New plugin request
+description: Request a new provider, tool, or publisher
+labels: ["plugin", "enhancement", "good first issue"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Plugin kind
+      options:
+        - LLM provider
+        - TTS provider
+        - Image provider
+        - Video provider
+        - Publisher
+        - Tool (audio/data/notify/integration/etc.)
+        - Step
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      placeholder: e.g. "groq", "elevenlabs", "notify.slack", "publish.tiktok"
+    validations:
+      required: true
+
+  - type: textarea
+    id: api
+    attributes:
+      label: API / SDK link
+      placeholder: Link to the upstream docs.
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (auth, pricing tier, anything unusual)

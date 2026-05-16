@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/vidhyatr25/agentry/discussions
+    about: Ideas, questions, show-and-tell, plugin marketplace requests.
+  - name: ⭐ Star the repo
+    url: https://github.com/vidhyatr25/agentry
+    about: If Agentry saves you time, a star helps others find it.

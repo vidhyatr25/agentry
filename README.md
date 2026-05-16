@@ -4,12 +4,19 @@
 > Bring an LLM key, point at a JSON workflow, get videos shipping on a schedule.
 
 <p>
+  <a href="https://github.com/vidhyatr25/agentry/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/vidhyatr25/agentry?style=social" /></a>
   <img alt="CI"      src="https://img.shields.io/badge/CI-passing-brightgreen" />
   <img alt="tests"   src="https://img.shields.io/badge/tests-18%20passing-brightgreen" />
   <img alt="license" src="https://img.shields.io/badge/license-MIT-blue" />
+  <img alt="python"  src="https://img.shields.io/badge/python-3.12%2B-blue" />
   <img alt="hosted"  src="https://img.shields.io/badge/hosted-GitHub%20Actions%20%2B%20Pages-black" />
   <img alt="cost"    src="https://img.shields.io/badge/cost-free%20except%20LLM%20tokens-success" />
+  <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen" />
 </p>
+
+<p><strong>⭐ If Agentry saves you time, star this repo — it really helps others find it. ⭐</strong></p>
+
+<p><em>Keywords: workflow automation · AI agents · LLM orchestration · n8n alternative · self-hosted · low-code · video generation · YouTube automation · agentic AI · Gemini · Claude · OpenAI · Python · GitHub Actions</em></p>
 
 ---
 
@@ -31,6 +38,13 @@
 > filenames) and they'll appear here automatically.
 
 ---
+
+## Who's it for
+
+- **Indie creators** who want AI-generated short-form content (YouTube Shorts, Reels, TikTok) shipped on schedule, free.
+- **Builders** who want an **n8n alternative** that's truly open-source, self-hosted on GitHub (no SaaS bill), and **agentic out of the box**.
+- **Engineers** who want a clean Python plugin framework for content + LLM workflows — add a provider/tool/step in **one file**.
+- **Researchers / hackers** experimenting with agent loops, tool calling, prompt engineering, and cost-aware LLM orchestration.
 
 ## What it is
 
@@ -182,11 +196,47 @@ Detail in [docs/ROADMAP_TO_9.md](docs/ROADMAP_TO_9.md).
 - [SECURITY.md](SECURITY.md) — threat model & hardening
 - [CHANGELOG.md](CHANGELOG.md)
 
+## FAQ
+
+**Is this really free?**
+Yes — hosted entirely on GitHub Actions + Pages. The only cost is your LLM
+tokens (and free tiers exist for Gemini, Claude, OpenAI).
+
+**How is this different from n8n / Make / Zapier?**
+Free + self-hosted by default, agentic out of the box, video/audio-native via
+ffmpeg, and every part is config-driven JSON you can also edit visually.
+See the comparison table above.
+
+**Do I have to use it for kids videos?**
+No. The kids workflow is one example. The engine is generic — same code runs
+research digests, podcast clips, Instagram Reels, newsletter automation, etc.
+See [docs/PLAN_STRENGTHEN.md](docs/PLAN_STRENGTHEN.md).
+
+**Can I run it without GitHub?**
+Yes. There's a Docker stack (`docker compose up -d`) that runs the same engine
+on any host. See [docs/DOCKER.md](docs/DOCKER.md).
+
+**Will I make money on YouTube with this?**
+No code can promise that. Agentry removes the labor of researching, writing,
+generating and publishing content; reach and monetization depend on niche,
+quality, and the platform's algorithm. Built for time-savings, not revenue
+guarantees.
+
+**How do I add a new LLM / provider / publisher?**
+One file with one decorator — see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+**Is my data / API key safe?**
+Secrets are env-only, masked in logs, and never written to state files. The
+admin dashboard auth uses PBKDF2 (no plaintext). See [SECURITY.md](SECURITY.md).
+
 ## Contributing & community
 
-Issues and PRs welcome. If this saves you time, please star ⭐ the repo — it
-helps others discover it. A short demo screenshot or GIF in an issue is the
-quickest way to suggest a UI improvement.
+- 🧩 **[CONTRIBUTING.md](CONTRIBUTING.md)** — add a provider, tool, or workflow in minutes
+- 💬 **[Discussions](https://github.com/vidhyatr25/agentry/discussions)** — ideas, questions, show-and-tell
+- 🐛 **[Issues](https://github.com/vidhyatr25/agentry/issues)** — bugs, plugin requests
+- 📜 **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)**
+- ⭐ **Star this repo** — the single best thing you can do to help the project.
+- 💖 **[Sponsor](https://github.com/sponsors/vidhyatr25)** — keep development going.
 
 ## License
 
