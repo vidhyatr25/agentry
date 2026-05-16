@@ -1,0 +1,50 @@
+[
+  {
+    "name": "audio.concat",
+    "description": "Concatenate a list of audio files into one track. Free.",
+    "cost": "free",
+    "inputs": {
+      "parts": "list[string]"
+    },
+    "outputs": {
+      "path": "string"
+    }
+  },
+  {
+    "name": "audio.mix",
+    "description": "Mix narration over background music with sidechain ducking (music dips automatically under speech). Free, ffmpeg.",
+    "cost": "free",
+    "inputs": {
+      "narration": "string",
+      "music": "string",
+      "music_volume": "float(optional,0.35)"
+    },
+    "outputs": {
+      "path": "string"
+    }
+  },
+  {
+    "name": "audio.normalize",
+    "description": "Loudness-normalize audio to broadcast level (EBU R128). Free.",
+    "cost": "free",
+    "inputs": {
+      "path": "string",
+      "target_i": "float(optional,-16)"
+    },
+    "outputs": {
+      "path": "string"
+    }
+  },
+  {
+    "name": "audio.silence",
+    "description": "Generate a silent audio track of N seconds (free, offline).",
+    "cost": "free",
+    "inputs": {
+      "seconds": "float",
+      "out": "string(optional)"
+    },
+    "outputs": {
+      "path": "string"
+    }
+  }
+]

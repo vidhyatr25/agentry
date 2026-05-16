@@ -1,0 +1,34 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: Unit tests
+        run: python -m pytest tests/ -q
+      - name: Validate workflows
+        run: |
+          for f in workflows/*.json; do python -m agentry.cli validate "$f"; done
+      - name: Registry sanity
+        run: python -m agentry.cli providers >/dev/null
+      - name: End-to-end dry-run (real ffmpeg, no keys, no spend)
+        run: |
+          python -m agentry.cli run workflows/kids_video_youtube.json --dry-run
+          test -f "$(ls -t runs/*/video/final.mp4 | head -1)"

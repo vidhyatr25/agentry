@@ -1,0 +1,145 @@
+{
+  "name": "kids_video_youtube",
+  "description": "Daily AI-generated kids short: research -> story -> voice -> images -> video -> SEO -> YouTube.",
+  "schedule": "0 6,12,18 * * *",
+  "video": {
+    "format": "shorts",
+    "aspect_ratio": "9:16",
+    "resolution": [1080, 1920],
+    "fps": 30,
+    "max_duration_sec": 60
+  },
+  "providers": {
+    "llm_default": {
+      "kind": "llm",
+      "provider": "gemini",
+      "model": "gemini-2.0-flash",
+      "options": {
+        "api_key": "${GEMINI_API_KEY}",
+        "temperature": 0.9,
+        "max_tokens": 2048
+      }
+    },
+    "tts_default": {
+      "kind": "tts",
+      "provider": "edge_tts",
+      "options": {
+        "voice": "en-US-AnaNeural",
+        "rate": "+6%"
+      }
+    },
+    "image_default": {
+      "kind": "image",
+      "provider": "pollinations",
+      "options": {
+        "model": "flux"
+      }
+    },
+    "video_default": {
+      "kind": "video",
+      "provider": "ffmpeg_slideshow",
+      "options": {
+        "zoom": 0.0012,
+        "music_volume": 0.1
+      }
+    },
+    "publisher_default": {
+      "kind": "publisher",
+      "provider": "youtube",
+      "options": {
+        "client_id": "${YOUTUBE_CLIENT_ID}",
+        "client_secret": "${YOUTUBE_CLIENT_SECRET}",
+        "refresh_token": "${YOUTUBE_REFRESH_TOKEN}",
+        "privacy": "unlisted",
+        "made_for_kids": true,
+        "category_id": 24
+      }
+    }
+  },
+  "steps": [
+    {
+      "type": "research_trends",
+      "params": {
+        "llm": "llm_default",
+        "audience": "kids aged 4-8",
+        "theme": "fun educational stories about nature, animals, space and kindness",
+        "count": 6,
+        "news_feed": "",
+        "system": "You are a kids content strategist focused on safety and curiosity.",
+        "prompt": "You plan a children's video channel for {{audience}}. Theme: {{theme}}. {{news_context}}\nPropose {{count}} fresh, safe, highly clickable video topic ideas that teach something positive. Avoid anything scary, branded, or unsafe."
+      }
+    },
+    {
+      "type": "pick_subject",
+      "params": {
+        "llm": "llm_default",
+        "audience": "kids aged 4-8",
+        "system": "You are a children's storyteller and educator.",
+        "prompt": "From these topics: {{topics}}\nPick the single best one for {{audience}} and build a creative brief: a catchy working title, the core learning goal, the emotional hook, and a warm narration tone."
+      }
+    },
+    {
+      "type": "write_script",
+      "params": {
+        "llm": "llm_default",
+        "scene_count": 7,
+        "words_target": 140,
+        "system": "You write safe, warm, age-appropriate kids scripts.",
+        "prompt": "Write a narrated short video script for children.\nTitle: {{subject.title}}\nLearning goal: {{subject.learning_goal}}\nHook: {{subject.hook}}\nTone: {{subject.tone}}\nTotal narration about {{words_target}} words across {{scene_count}} scenes. Each scene: one or two short spoken sentences and a vivid visual description. Open with the hook in the first sentence. End with a friendly call to subscribe."
+      }
+    },
+    {
+      "type": "build_visual_prompts",
+      "params": {
+        "llm": "llm_default",
+        "style": "bright 3D Pixar-style cartoon, soft cinematic lighting, rounded shapes, cheerful palette, child friendly",
+        "system": "You are a prompt engineer for consistent kids illustrations.",
+        "prompt": "Global art style: {{style}}. Keep characters and palette consistent.\nFor each scene visual below, write a detailed image-generation prompt and a very short on-screen caption (max 8 words).\nScenes: {{scene_descriptions}}"
+      }
+    },
+    {
+      "type": "synthesize_voice",
+      "params": { "tts": "tts_default" }
+    },
+    {
+      "type": "generate_images",
+      "params": { "image": "image_default" }
+    },
+    {
+      "type": "assemble_video",
+      "params": {
+        "video": "video_default",
+        "subtitles": true,
+        "music": "assets/music/calm.mp3"
+      }
+    },
+    {
+      "type": "optimize_metadata",
+      "params": {
+        "llm": "llm_default",
+        "platform": "youtube_shorts",
+        "max_tags": 15,
+        "keyword_seed": ["kids learning", "story time", "educational cartoon", "kids shorts"],
+        "system": "You are a YouTube growth and SEO specialist for kids channels.",
+        "prompt": "Create {{platform}} SEO metadata for a kids short video.\nWorking title: {{title}}\nSummary: {{summary}}\nSeed keywords: {{keyword_seed}}\nRules (2026 Shorts best practice): the primary search keyword MUST be in the first 40 characters of the title; title under 70 chars, curiosity-driven, max 1 emoji, no false clickbait. Description: a strong 1-line hook, a 3-5 sentence keyword-rich summary, then exactly 3-5 niche hashtags plus #Shorts (never more than 5 total hashtags). Provide {{max_tags}} lowercase search tags. hashtags list: the same 3-5 niche tags plus #Shorts, each starting with #. Strictly family-safe."
+      }
+    },
+    {
+      "type": "safety_gate",
+      "params": {
+        "llm": "llm_default",
+        "audience": "kids aged 4-8",
+        "system": "You are a strict child-safety content reviewer.",
+        "prompt": "Audience: {{audience}}. Review this content for safety, age-appropriateness and brand risk.\nTitle: {{title}}\nScript: {{script}}\nReject anything scary, violent, sexual, hateful, unsafe, deceptive, or impersonating real brands/people. Respond strictly as JSON."
+      }
+    },
+    {
+      "type": "publish",
+      "params": { "publisher": "publisher_default" }
+    },
+    {
+      "type": "record_stats",
+      "params": { "state_dir": "state" }
+    }
+  ]
+}

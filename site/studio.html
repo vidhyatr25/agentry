@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentry · Editor</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<div id="gate" class="overlay" style="display:none">
+  <div class="card login">
+    <div class="brand" style="margin-bottom:6px"><span class="dot">◆</span> Agentry</div>
+    <p class="muted">Admin sign-in required to edit configuration.</p>
+    <label class="fld">Username</label>
+    <input class="in" id="gu" autocomplete="username">
+    <label class="fld">Password</label>
+    <input class="in" id="gp" type="password" autocomplete="current-password">
+    <div class="row" style="margin-top:16px">
+      <button class="btn primary" id="gsubmit">Sign in</button>
+      <span id="gmsg" class="muted"></span>
+    </div>
+  </div>
+</div>
+
+<div class="shell" id="app" style="display:none">
+  <aside class="side">
+    <div class="brand"><span class="dot">◆</span> Agentry</div>
+    <nav>
+      <a href="index.html">▤ Dashboard</a>
+      <a class="active" href="#workflows">✦ Editor</a>
+      <a href="graph.html">⬡ Visual Builder</a>
+      <a href="start.html">▶ Get Started</a>
+      <a href="#schedules">⏱ Schedules</a>
+      <a href="#prompts">✎ Prompts</a>
+    </nav>
+    <div class="foot" id="authnote"></div>
+  </aside>
+  <main>
+    <div class="head">
+      <div><h1>Agentry</h1><p>Edit any workflow, prompt, provider and schedule — no code</p></div>
+      <div class="row">
+        <select class="in" id="wf" style="width:auto"></select>
+        <button class="btn" id="loadbtn">Open</button>
+        <button class="btn" id="newbtn">+ New</button>
+      </div>
+    </div>
+
+    <div class="banner warn" id="lockwarn" style="display:none">
+      Editor is unlocked — set <code>ADMIN_USERNAME</code> and <code>ADMIN_PASSWORD</code> repo secrets to require sign-in.
+    </div>
+
+    <div class="section" id="workflows">
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <div><strong id="wfname">—</strong> <span class="muted" id="wfdesc"></span></div>
+          <button class="btn ghost" id="rawtoggle">⇄ Raw JSON</button>
+        </div>
+
+        <div id="form">
+          <label class="fld">Name</label><input class="in" id="f_name">
+          <label class="fld">Description</label><input class="in" id="f_desc">
+          <div class="row">
+            <div style="flex:1"><label class="fld">Format</label><input class="in" id="f_format"></div>
+            <div style="flex:1"><label class="fld">Resolution (w,h)</label><input class="in" id="f_res"></div>
+            <div style="flex:1"><label class="fld">FPS</label><input class="in" id="f_fps"></div>
+          </div>
+
+          <h2 class="section">Providers <span class="muted">(swap model/provider per role)</span></h2>
+          <div id="providersForm"></div>
+
+          <h2 class="section" id="prompts">Steps &amp; prompts</h2>
+          <div id="stepsForm"></div>
+        </div>
+
+        <textarea class="in" id="raw" style="height:520px;display:none"></textarea>
+
+        <div class="row" style="margin-top:18px">
+          <button class="btn" id="validate">Validate</button>
+          <button class="btn primary" id="download">Download JSON</button>
+          <button class="btn" id="copy">Copy</button>
+          <button class="btn" id="commit">Save to GitHub</button>
+          <span id="msg" class="muted"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="schedules">
+      <h2>Schedules <span class="muted">— which workflows run, and when (UTC cron)</span></h2>
+      <div class="card">
+        <table id="schedTable"><thead><tr><th>Workflow file</th><th>Enabled</th><th>Cron</th><th>Dry run</th></tr></thead><tbody></tbody></table>
+        <div class="row" style="margin-top:14px">
+          <button class="btn" id="addSched">+ Add row</button>
+          <button class="btn primary" id="saveSched">Save schedules to GitHub</button>
+          <span class="muted">Dispatcher checks every 30 min and runs anything due.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>GitHub connection <span class="muted">(needed only to save from here)</span></h2>
+      <div class="card">
+        <p class="muted">Fine-grained token with <em>Contents: read/write</em> on this repo only.
+        It stays in this browser tab and is sent solely to api.github.com over HTTPS. Never shared, never stored server-side.</p>
+        <div class="row">
+          <input class="in" id="repo" placeholder="owner/repo" style="max-width:260px">
+          <input class="in" id="pat" type="password" placeholder="github_pat_…" style="max-width:320px">
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const j = async p => (await fetch(p+'?t='+Date.now())).json();
+const txt = async p => (await fetch(p+'?t='+Date.now())).text();
+const $ = id => document.getElementById(id);
+let CURRENT = { file:null, obj:null }, CATALOG = {}, SCHED = {workflows:[]};
+
+async function pbkdf2(pw, saltHex, iters) {
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']);
+  const salt = Uint8Array.from(saltHex.match(/.{2}/g).map(h => parseInt(h,16)));
+  const bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt, iterations:iters, hash:'SHA-256'}, key, 256);
+  return [...new Uint8Array(bits)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+async function gate() {
+  let auth = {enabled:false};
+  try { auth = await j('data/auth.json'); } catch(e) {}
+  if (!auth.enabled || sessionStorage.getItem('wfs_ok') === '1') { open_app(!auth.enabled); return; }
+  $('gate').style.display = 'grid';
+  $('gsubmit').onclick = async () => {
+    const h = await pbkdf2($('gp').value, auth.salt, auth.iterations);
+    if ($('gu').value === auth.username && h === auth.hash) {
+      sessionStorage.setItem('wfs_ok','1'); $('gate').style.display='none'; open_app(false);
+    } else { $('gmsg').textContent = 'Invalid credentials'; }
+  };
+  $('gp').addEventListener('keydown', e => { if (e.key==='Enter') $('gsubmit').click(); });
+}
+function open_app(unlocked) {
+  $('app').style.display = 'grid';
+  $('authnote').textContent = unlocked ? 'Editor unlocked (no admin secret set)' : 'Signed in';
+  if (unlocked) $('lockwarn').style.display = 'block';
+  boot();
+}
+
+async function boot() {
+  try { CATALOG = await j('data/providers.json'); } catch(e) {}
+  const idx = await j('data/workflows/index.json').catch(() => []);
+  $('wf').innerHTML = idx.map(w => `<option value="${w.file}">${w.name}</option>`).join('');
+  try { SCHED = jsyaml(await txt('data/schedules.yaml')); } catch(e) { SCHED = {workflows:[]}; }
+  renderSched();
+  if (idx.length) loadWf(idx[0].file);
+}
+function jsyaml(t) {
+  try { return JSON.parse(t); } catch(e) {}
+  const out = {workflows:[]}; let cur = null;
+  t.split('\n').forEach(l => {
+    const m = l.match(/-\s*file:\s*(.+)/); if (m) { cur = {file:m[1].trim()}; out.workflows.push(cur); return; }
+    const kv = l.match(/^\s+(\w+):\s*(.+)/);
+    if (kv && cur) { let v=kv[2].trim(); if(v==='true')v=true; else if(v==='false')v=false; v=(''+v).replace(/^["']|["']$/g,''); cur[kv[1]]=v; }
+  });
+  return out;
+}
+function setMsg(t, cls='muted') { $('msg').textContent = t; $('msg').className = cls; }
+
+async function loadWf(file) {
+  const obj = await j('data/workflows/'+file);
+  CURRENT = { file: 'workflows/'+file, obj };
+  $('wfname').textContent = obj.name; $('wfdesc').textContent = obj.description||'';
+  $('f_name').value = obj.name||''; $('f_desc').value = obj.description||'';
+  const v = obj.video||{};
+  $('f_format').value = v.format||''; $('f_res').value = (v.resolution||[]).join(','); $('f_fps').value = v.fps||'';
+  $('providersForm').innerHTML = Object.entries(obj.providers||{}).map(([role,sp]) => {
+    const opts = (CATALOG['provider:'+sp.kind]||[]).map(n =>
+      `<option ${n===sp.provider?'selected':''}>${n}</option>`).join('');
+    return `<div class="step-card"><div class="t">${role} <span class="muted">(${sp.kind})</span></div>
+      <div class="row" style="margin-top:8px">
+        <div style="flex:1"><label class="fld">Provider</label><select class="in" data-role="${role}" data-k="provider">${opts}</select></div>
+        <div style="flex:1"><label class="fld">Model</label><input class="in" data-role="${role}" data-k="model" value="${sp.model||''}"></div>
+      </div></div>`;
+  }).join('');
+  $('stepsForm').innerHTML = (obj.steps||[]).map((s,i) => {
+    const p = s.params||{};
+    const pr = ('prompt' in p) ? `<label class="fld">Prompt</label><textarea class="in" data-step="${i}" data-k="prompt" style="height:120px">${(p.prompt||'').replace(/</g,'&lt;')}</textarea>` : '';
+    const sy = ('system' in p) ? `<label class="fld">System</label><textarea class="in" data-step="${i}" data-k="system" style="height:60px">${(p.system||'').replace(/</g,'&lt;')}</textarea>` : '';
+    return `<div class="step-card"><div class="t">${i+1}. ${s.type}</div>${sy}${pr}
+      ${!pr&&!sy?'<div class="muted" style="margin-top:6px">No editable prompt (media/publish step)</div>':''}</div>`;
+  }).join('');
+  $('raw').value = JSON.stringify(obj, null, 2);
+  setMsg('Loaded '+file, 'muted');
+}
+function syncFromForm() {
+  const o = CURRENT.obj; o.name = $('f_name').value; o.description = $('f_desc').value;
+  o.video = o.video||{}; o.video.format = $('f_format').value;
+  o.video.resolution = $('f_res').value.split(',').map(n=>+n.trim()).filter(Boolean);
+  o.video.fps = +$('f_fps').value || o.video.fps;
+  document.querySelectorAll('[data-role]').forEach(el => { o.providers[el.dataset.role][el.dataset.k] = el.value; });
+  document.querySelectorAll('[data-step]').forEach(el => { o.steps[+el.dataset.step].params[el.dataset.k] = el.value; });
+  $('raw').value = JSON.stringify(o, null, 2);
+  return o;
+}
+$('rawtoggle').onclick = () => {
+  const raw = $('raw').style.display === 'none';
+  if (raw) syncFromForm();
+  $('raw').style.display = raw ? 'block' : 'none';
+  $('form').style.display = raw ? 'none' : 'block';
+};
+$('loadbtn').onclick = () => loadWf($('wf').value);
+$('newbtn').onclick = () => {
+  const base = CURRENT.obj ? JSON.parse(JSON.stringify(CURRENT.obj)) : {name:'new_workflow',steps:[]};
+  base.name = 'new_workflow'; base.description = 'New workflow (clone) — edit and save';
+  CURRENT = { file:'workflows/new_workflow.json', obj: base };
+  $('raw').value = JSON.stringify(base, null, 2);
+  loadWfFromObj(base); setMsg('New workflow scaffolded from current — rename & save', 'muted');
+};
+function loadWfFromObj(obj){ CURRENT.obj=obj; $('wfname').textContent=obj.name; $('raw').value=JSON.stringify(obj,null,2);
+  $('f_name').value=obj.name; $('f_desc').value=obj.description||''; }
+$('validate').onclick = () => {
+  try { JSON.parse($('raw').style.display==='none' ? JSON.stringify(syncFromForm()) : $('raw').value); setMsg('Valid JSON ✓','muted'); }
+  catch(e){ setMsg('Invalid JSON: '+e.message,'muted'); }
+};
+function currentText() {
+  if ($('raw').style.display === 'none') return JSON.stringify(syncFromForm(), null, 2);
+  return JSON.stringify(JSON.parse($('raw').value), null, 2);
+}
+$('download').onclick = () => {
+  let t; try { t = currentText(); } catch(e) { return setMsg('Fix JSON first','muted'); }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([t],{type:'application/json'}));
+  a.download = CURRENT.file.split('/').pop(); a.click();
+  setMsg('Downloaded — commit to workflows/ to apply','muted');
+};
+$('copy').onclick = async () => { await navigator.clipboard.writeText(currentText()); setMsg('Copied','muted'); };
+
+async function ghPut(path, contentStr, message) {
+  const repo = $('repo').value.trim(), pat = $('pat').value.trim();
+  if (!repo || !pat) { setMsg('Enter repo + token below first','muted'); return false; }
+  const api = `https://api.github.com/repos/${repo}/contents/${path}`;
+  const head = { 'Authorization':'Bearer '+pat, 'Accept':'application/vnd.github+json' };
+  let sha = null;
+  try { const g = await fetch(api,{headers:head}); if (g.ok) sha = (await g.json()).sha; } catch(e) {}
+  const body = { message, content: btoa(unescape(encodeURIComponent(contentStr))) };
+  if (sha) body.sha = sha;
+  const r = await fetch(api,{method:'PUT',headers:head,body:JSON.stringify(body)});
+  return r.ok;
+}
+$('commit').onclick = async () => {
+  let t; try { t = currentText(); } catch(e) { return setMsg('Fix JSON first','muted'); }
+  setMsg('Saving…','muted');
+  const ok = await ghPut(CURRENT.file, t, `config: update ${CURRENT.file} via studio`);
+  setMsg(ok ? 'Saved ✓ next scheduled run uses it' : 'Save failed (check repo/token scope)', 'muted');
+};
+
+function renderSched() {
+  $('schedTable').querySelector('tbody').innerHTML = (SCHED.workflows||[]).map((w,i) => `
+    <tr>
+      <td><input class="in" data-s="${i}" data-k="file" value="${w.file||''}"></td>
+      <td><select class="in" data-s="${i}" data-k="enabled"><option ${w.enabled?'selected':''}>true</option><option ${!w.enabled?'selected':''}>false</option></select></td>
+      <td><input class="in" data-s="${i}" data-k="cron" value="${w.cron||''}"></td>
+      <td><select class="in" data-s="${i}" data-k="dry_run"><option ${w.dry_run?'selected':''}>true</option><option ${!w.dry_run?'selected':''}>false</option></select></td>
+    </tr>`).join('');
+}
+$('addSched').onclick = () => { SCHED.workflows.push({file:'workflows/.json',enabled:false,cron:'0 9 * * *',dry_run:true}); renderSched(); };
+$('saveSched').onclick = async () => {
+  document.querySelectorAll('[data-s]').forEach(el => {
+    let v = el.value; if (v==='true') v=true; else if (v==='false') v=false;
+    SCHED.workflows[+el.dataset.s][el.dataset.k] = v;
+  });
+  const ok = await ghPut('config/schedules.yaml', JSON.stringify(SCHED, null, 2), 'config: update schedules via studio');
+  setMsg(ok ? 'Schedules saved ✓' : 'Save failed (check repo/token)', 'muted');
+};
+gate();
+</script>
+</body>
+</html>

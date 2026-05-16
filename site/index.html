@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentry · Dashboard</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><span class="dot">◆</span> Agentry</div>
+    <nav>
+      <a class="active" href="index.html">▤ Dashboard</a>
+      <a href="studio.html">✦ Editor</a>
+      <a href="graph.html">⬡ Visual Builder</a>
+      <a href="start.html">▶ Get Started</a>
+      <a href="studio.html#schedules">⏱ Schedules</a>
+      <a href="studio.html#prompts">✎ Prompts</a>
+    </nav>
+    <div class="foot">Static dashboard · auto-refreshes · data committed by GitHub Actions</div>
+  </aside>
+  <main>
+    <div class="head">
+      <div><h1>Dashboard</h1><p>Live production metrics from the automation engine</p></div>
+      <button class="btn" onclick="location.reload()">↻ Refresh</button>
+    </div>
+
+    <div class="grid" id="kpis"></div>
+
+    <div class="section">
+      <h2>Tokens — recent runs</h2>
+      <div class="card"><div class="bars" id="bars"></div></div>
+    </div>
+
+    <div class="grid section" style="grid-template-columns:1fr 1fr">
+      <div class="card">
+        <h2 style="margin-top:0">Cost by provider</h2>
+        <table id="providers"><thead><tr><th>Provider</th><th>Calls</th><th>Tokens</th><th>Cost</th></tr></thead><tbody></tbody></table>
+      </div>
+      <div class="card">
+        <h2 style="margin-top:0">Schedule status</h2>
+        <table id="sched"><thead><tr><th>Workflow</th><th>Cron</th><th>State</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Recently published</h2>
+      <div class="card"><table id="recent"><thead><tr><th>Title</th><th>Platform</th><th>Status</th><th>When</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <p class="muted" id="foot" style="margin-top:24px">Loading…</p>
+  </main>
+</div>
+<script>
+const j = async p => { try { return await (await fetch(p+'?t='+Date.now())).json(); } catch(e){ return null; } };
+const when = ts => ts ? new Date(ts*1000).toLocaleString() : '—';
+(async () => {
+  const stats = await j('data/stats.json') || {};
+  const usage = await j('data/usage.json') || [];
+  const sched = await j('data/schedule.json') || {workflows:[]};
+
+  document.getElementById('kpis').innerHTML = [
+    ['Videos published', stats.videos_published ?? 0, 'lifetime'],
+    ['Total runs', stats.total_runs ?? 0, 'all workflows'],
+    ['Tokens used', (stats.total_tokens ?? 0).toLocaleString(), 'metered'],
+    ['Total cost', '$'+(stats.total_cost_usd ?? 0).toFixed(4), 'LLM + media']
+  ].map(k => `<div class="card kpi"><div class="v">${k[1]}</div><div class="l">${k[0]}</div><div class="s">${k[2]}</div></div>`).join('');
+
+  const last = usage.slice(-12);
+  const max = Math.max(1, ...last.map(r => (r.totals||{}).total_tokens||0));
+  document.getElementById('bars').innerHTML = last.length
+    ? last.map(r => { const t=(r.totals||{}).total_tokens||0;
+        return `<div class="b" style="height:${Math.round(t/max*100)}%" title="${t} tokens"><span>${t}</span></div>`; }).join('')
+    : '<p class="muted">No runs yet — bars appear after the first scheduled run.</p>';
+
+  const agg = {};
+  usage.forEach(r => Object.entries((r.totals||{}).by_provider||{}).forEach(([n,v]) => {
+    const a = agg[n] || {calls:0,total_tokens:0,cost_usd:0};
+    a.calls+=v.calls||0; a.total_tokens+=v.total_tokens||0; a.cost_usd+=v.cost_usd||0; agg[n]=a; }));
+  document.querySelector('#providers tbody').innerHTML = Object.entries(agg).map(([n,v]) =>
+    `<tr><td>${n}</td><td>${v.calls}</td><td>${v.total_tokens.toLocaleString()}</td><td>$${v.cost_usd.toFixed(5)}</td></tr>`
+  ).join('') || '<tr><td colspan="4" class="muted">No usage yet</td></tr>';
+
+  document.querySelector('#sched tbody').innerHTML = (sched.workflows||[]).map(w => {
+    const cls = w.enabled ? (w.due ? 'warn' : 'ok') : '';
+    const st = !w.enabled ? 'disabled' : (w.due ? 'due' : 'scheduled');
+    return `<tr><td>${w.file.split('/').pop()}</td><td><code>${w.cron||'—'}</code></td><td><span class="pill ${cls}">${st}</span></td></tr>`;
+  }).join('') || '<tr><td colspan="3" class="muted">No schedule registered</td></tr>';
+
+  document.querySelector('#recent tbody').innerHTML = (stats.recent||[]).map(r => {
+    const cls = (r.status==='published'||r.status==='saved') ? 'ok' : 'err';
+    return `<tr><td>${r.title||'—'}</td><td>${r.platform||'—'}</td><td><span class="pill ${cls}">${r.status||'—'}</span></td><td>${when(r.published_at)}</td><td>${r.url?`<a class="link" target="_blank" href="${r.url}">open ↗</a>`:''}</td></tr>`;
+  }).join('') || '<tr><td colspan="5" class="muted">Nothing published yet — the first scheduled run will appear here.</td></tr>';
+
+  document.getElementById('foot').textContent = 'Last updated ' + when(stats.updated_at) + ' · refreshing every 2 min';
+  setTimeout(() => location.reload(), 120000);
+})();
+</script>
+</body>
+</html>

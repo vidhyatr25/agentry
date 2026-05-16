@@ -1,0 +1,26 @@
+[
+  {
+    "file": "example_agent_audio.json",
+    "name": "example_agent_audio",
+    "description": "Agentic mode demo: an LLM planner selects free audio tools to build and normalize an audio bed. Proves the tool registry + agent loop.",
+    "schedule": null
+  },
+  {
+    "file": "example_graph.json",
+    "name": "example_graph",
+    "description": "n8n-style DAG: nodes with ids + needs + a conditional edge. Same engine, graph mode instead of linear steps.",
+    "schedule": null
+  },
+  {
+    "file": "example_instagram_reel.json",
+    "name": "example_instagram_reel",
+    "description": "Same engine, different config: proves zero-code reuse for a new platform/workflow.",
+    "schedule": "0 15 * * *"
+  },
+  {
+    "file": "kids_video_youtube.json",
+    "name": "kids_video_youtube",
+    "description": "Daily AI-generated kids short: research -> story -> voice -> images -> video -> SEO -> YouTube.",
+    "schedule": "0 6,12,18 * * *"
+  }
+]

@@ -1,0 +1,31 @@
+name: agentry
+
+services:
+  web:
+    build: .
+    image: agentry:latest
+    container_name: agentry-web
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./state:/app/state
+      - ./site/data:/app/site/data
+    restart: unless-stopped
+
+  worker:
+    image: agentry:latest
+    depends_on:
+      - web
+    container_name: agentry-worker
+    env_file:
+      - .env
+    volumes:
+      - ./state:/app/state
+      - ./site/data:/app/site/data
+      - ./runs:/app/runs
+    command: >
+      sh -c "while true; do
+        python -m agentry.cli scheduler --window 35 || true;
+        sleep ${WFS_TICK_SECONDS:-1800};
+      done"
+    restart: unless-stopped
