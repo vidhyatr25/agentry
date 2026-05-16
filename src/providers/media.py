@@ -12,9 +12,9 @@ def ffmpeg_bin():
     return found
 
 
-def run_ffmpeg(args):
+def run_ffmpeg(args, cwd=None):
     cmd = [ffmpeg_bin(), "-y", "-hide_banner", "-loglevel", "error", *args]
-    proc = subprocess.run(cmd, capture_output=True, text=True)
+    proc = subprocess.run(cmd, capture_output=True, text=True, cwd=cwd)
     if proc.returncode != 0:
         raise ProviderError(f"ffmpeg failed: {proc.stderr[:400]}")
 
