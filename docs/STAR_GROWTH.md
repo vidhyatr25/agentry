@@ -26,7 +26,7 @@ term. Below is a concrete plan in order of leverage.
 - **Day 1 — r/selfhosted** post: title "I built a free, self-hosted, agentic
   content-automation engine that runs on GitHub Actions". Lead with the live
   demo URL and the visual builder screenshot. Be candid about scope.
-- **Day 2 — Hacker News (Show HN)**: title "Show HN: Workflow Studio – n8n-style
+- **Day 2 — Hacker News (Show HN)**: title "Show HN: Agentry – n8n-style
   agentic engine that runs free on GitHub". Post in the morning ET. Reply to
   every comment in the first 4 hours; the engagement bump matters.
 - **Day 3 — Product Hunt**: schedule for a Tuesday/Wednesday launch.

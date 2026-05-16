@@ -1,6 +1,6 @@
 # Docker — self-host the two apps
 
-Workflow Studio runs as a tiny two-service Compose stack on any host:
+Agentry runs as a tiny two-service Compose stack on any host:
 
 | Service  | What it does                                | Port |
 |----------|---------------------------------------------|------|
@@ -28,7 +28,7 @@ docker compose up -d
 ```
 
 - Dashboard → http://localhost:8000
-- Workflow Studio → http://localhost:8000/studio.html
+- Agentry → http://localhost:8000/studio.html
 - Visual Builder → http://localhost:8000/graph.html
 - Get Started → http://localhost:8000/start.html
 
@@ -38,15 +38,15 @@ docker compose ps                       # status
 docker compose logs -f worker           # tail scheduler logs
 docker compose logs -f web              # tail web logs
 docker compose restart worker           # reload after editing config/
-docker compose exec worker python -m src.cli doctor
-docker compose exec worker python -m src.cli run workflows/kids_video_youtube.json --dry-run
+docker compose exec worker python -m agentry.cli doctor
+docker compose exec worker python -m agentry.cli run workflows/kids_video_youtube.json --dry-run
 docker compose down                     # stop everything (data persists on host)
 ```
 
 ## 4. Trigger a workflow manually (any time)
 ```bash
 docker compose exec worker \
-  python -m src.cli run workflows/kids_video_youtube.json
+  python -m agentry.cli run workflows/kids_video_youtube.json
 ```
 
 ## 5. Change the tick interval
@@ -73,13 +73,13 @@ Override via `.env`: `WFS_TICK_SECONDS=600`.
 If you don't want Compose, run web and worker as two `docker run` commands
 from the same image:
 ```bash
-docker build -t workflow-studio .
+docker build -t agentry .
 docker run -d --name wfs-web -p 8000:8000 \
   -v "$PWD/state:/app/state" -v "$PWD/site/data:/app/site/data" \
-  workflow-studio
+  agentry
 
 docker run -d --name wfs-worker --env-file .env \
   -v "$PWD/state:/app/state" -v "$PWD/site/data:/app/site/data" \
-  -v "$PWD/runs:/app/runs" workflow-studio \
-  sh -c 'while true; do python -m src.cli scheduler --window 35; sleep 1800; done'
+  -v "$PWD/runs:/app/runs" agentry \
+  sh -c 'while true; do python -m agentry.cli scheduler --window 35; sleep 1800; done'
 ```

@@ -1,4 +1,4 @@
-# Workflow Studio
+# Agentry
 
 > **Config-driven, agentic content-automation engine. n8n-style visual builder, runs free on GitHub.**
 > Bring an LLM key, point at a JSON workflow, get videos shipping on a schedule.
@@ -18,8 +18,8 @@
   <br><em>Live dashboard — videos, tokens, cost, schedule status</em>
 </p>
 <p align="center">
-  <img src="site/assets/shots/studio.svg" width="720" alt="Workflow Studio editor with provider dropdowns and editable prompts">
-  <br><em>Workflow Studio — change any provider/model/prompt from the UI</em>
+  <img src="site/assets/shots/studio.svg" width="720" alt="Agentry editor with provider dropdowns and editable prompts">
+  <br><em>Agentry — change any provider/model/prompt from the UI</em>
 </p>
 <p align="center">
   <img src="site/assets/shots/graph.svg" width="720" alt="n8n-style visual builder canvas">
@@ -43,9 +43,9 @@ engine runs *any* workflow you wire up in JSON or the visual builder.
 ## Why it exists
 
 n8n, Make, Zapier are great but **not free, not self-hosted by default, not
-content-native, and not agentic**. Workflow Studio is:
+content-native, and not agentic**. Agentry is:
 
-| | Workflow Studio | n8n (cloud) | Make | Zapier |
+| | Agentry | n8n (cloud) | Make | Zapier |
 |---|---|---|---|---|
 | Free self-hosted | ✅ GitHub Actions + Pages | partial (self-host work) | ❌ | ❌ |
 | Config-driven workflows (JSON) | ✅ | partial | partial | ❌ |
@@ -75,11 +75,11 @@ content-native, and not agentic**. Workflow Studio is:
 ## 60-second quickstart (local, no keys, no cost)
 
 ```bash
-git clone https://github.com/YOUR/workflow-studio && cd workflow-studio
+git clone https://github.com/YOUR/agentry && cd agentry
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt          # ffmpeg required for video: brew/apt install ffmpeg
-python -m src.cli doctor                  # preflight
-python -m src.cli run workflows/kids_video_youtube.json --dry-run
+python -m agentry.cli doctor                  # preflight
+python -m agentry.cli run workflows/kids_video_youtube.json --dry-run
 ```
 
 The dry-run produces a real `.mp4` with placeholder media and saves it
@@ -133,8 +133,8 @@ See [docs/ADDING_WORKFLOWS.md](docs/ADDING_WORKFLOWS.md).
 ### Add a new provider/tool/step
 One file, one decorator, auto-registered:
 ```python
-from src.core.registry import provider
-from src.providers.llm.base import LLMProvider, LLMResult
+from agentry.core.registry import provider
+from agentry.providers.llm.base import LLMProvider, LLMResult
 
 @provider("llm", "myprovider")
 class MyProvider(LLMProvider):

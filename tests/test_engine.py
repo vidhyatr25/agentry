@@ -3,13 +3,13 @@ import logging
 
 import pytest
 
-from src.core.config import deep_merge, validate_workflow
-from src.core.errors import BudgetError, ConfigError, SecretError
-from src.core.prompt import render_prompt
-from src.core.registry import Registry, RegistryError
-from src.core.scheduler import cron_match, due_in_window
-from src.core.secrets import SecretResolver
-from src.core.telemetry import Telemetry
+from agentry.core.config import deep_merge, validate_workflow
+from agentry.core.errors import BudgetError, ConfigError, SecretError
+from agentry.core.prompt import render_prompt
+from agentry.core.registry import Registry, RegistryError
+from agentry.core.scheduler import cron_match, due_in_window
+from agentry.core.secrets import SecretResolver
+from agentry.core.telemetry import Telemetry
 
 
 def test_registry_register_get_and_duplicate():
@@ -78,9 +78,9 @@ def test_validate_workflow_rules():
 
 
 def _runner(steps, settings=None):
-    from src.core.context import Context
-    from src.core.registry import registry, step
-    from src.core.workflow import WorkflowRunner
+    from agentry.core.context import Context
+    from agentry.core.registry import registry, step
+    from agentry.core.workflow import WorkflowRunner
 
     wf = {"name": "t", "steps": steps, "providers": {}}
     pricing = (settings or {}).get("telemetry", {}).get("pricing", {})
@@ -91,8 +91,8 @@ def _runner(steps, settings=None):
 
 
 def test_pipeline_runs_steps_and_passes_context(tmp_path):
-    from src.core.registry import registry
-    from src.core.step import Step
+    from agentry.core.registry import registry
+    from agentry.core.step import Step
 
     if "t_set" not in registry.names("step"):
         @registry.register("step", "t_set")
@@ -107,8 +107,8 @@ def test_pipeline_runs_steps_and_passes_context(tmp_path):
 
 
 def test_budget_breaker_aborts(tmp_path):
-    from src.core.registry import registry
-    from src.core.step import Step
+    from agentry.core.registry import registry
+    from agentry.core.step import Step
 
     if "t_burn" not in registry.names("step"):
         @registry.register("step", "t_burn")

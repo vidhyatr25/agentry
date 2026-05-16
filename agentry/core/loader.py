@@ -12,6 +12,6 @@ def _import_package(package_name):
 
 
 def load_plugins():
-    _import_package("src.providers")
-    _import_package("src.steps")
-    _import_package("src.tools")
+    _import_package("agentry.providers")
+    _import_package("agentry.steps")
+    _import_package("agentry.tools")

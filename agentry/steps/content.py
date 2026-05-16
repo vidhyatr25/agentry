@@ -10,7 +10,7 @@ from ..core.step import Step
 
 def _fetch_headlines(url, limit):
     try:
-        resp = requests.get(url, timeout=20, headers={"User-Agent": "workflow-studio"})
+        resp = requests.get(url, timeout=20, headers={"User-Agent": "agentry"})
         titles = re.findall(r"<title>(.*?)</title>", resp.text, re.IGNORECASE | re.DOTALL)
         cleaned = [
             re.sub(r"<!\[CDATA\[|\]\]>", "", t).strip()

@@ -6,7 +6,7 @@ No server, no paid host. Only LLM tokens cost money.
 
 ## 0. One-time: get the YouTube refresh token (local, ~5 min)
 ```bash
-cd workflow-studio
+cd agentry
 python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt -r requirements-auth.txt
 ```
@@ -29,7 +29,7 @@ git push -u origin main
 
 ## 2. Verify it's deployment-ready
 ```bash
-python -m src.cli doctor
+python -m agentry.cli doctor
 ```
 Secrets/ffmpeg showing FAIL **locally is fine** — they are provided by GitHub.
 The check that matters here is `workflow valid`.

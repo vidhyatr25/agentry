@@ -4,14 +4,14 @@ from pathlib import Path
 
 import pytest
 
-from src.core.config import load_json, validate_workflow
-from src.core.errors import WorkflowError
-from src.core.loader import load_plugins
-from src.core.registry import registry
-from src.core.secrets import SecretResolver
-from src.core.step import Step
-from src.core.telemetry import Telemetry
-from src.core.workflow import WorkflowRunner
+from agentry.core.config import load_json, validate_workflow
+from agentry.core.errors import WorkflowError
+from agentry.core.loader import load_plugins
+from agentry.core.registry import registry
+from agentry.core.secrets import SecretResolver
+from agentry.core.step import Step
+from agentry.core.telemetry import Telemetry
+from agentry.core.workflow import WorkflowRunner
 
 load_plugins()
 

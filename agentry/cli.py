@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def _logger():
-    logger = logging.getLogger("workflow-studio")
+    logger = logging.getLogger("agentry")
     if not logger.handlers:
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
@@ -240,7 +240,7 @@ def cmd_doctor(args):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(prog="workflow-studio")
+    parser = argparse.ArgumentParser(prog="agentry")
     sub = parser.add_subparsers(dest="command", required=True)
 
     run = sub.add_parser("run")
