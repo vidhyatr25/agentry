@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workflow Studio · Get started</title>
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  .hero { text-align:center; padding:50px 20px 30px; }
+  .hero h1 { font-size:34px; margin:8px 0 10px; letter-spacing:-.4px; }
+  .hero p { color:var(--muted); font-size:15px; max-width:640px; margin:0 auto; }
+  .grid3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
+  .step { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px; position:relative; }
+  .step .n { position:absolute; top:-12px; left:18px; background:linear-gradient(135deg,var(--brand),var(--brand-2));
+    color:#fff; font-weight:700; padding:4px 10px; border-radius:999px; font-size:12px; }
+  .step h3 { margin:10px 0 8px; font-size:15px; }
+  .step p { color:var(--muted); font-size:13px; margin:0 0 12px; }
+  pre { background:#0b0f15; border:1px solid var(--line); border-radius:10px; padding:12px 14px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; overflow:auto; color:#e8edf4; }
+  .copy { float:right; font-size:11px; cursor:pointer; background:#161b24; border:1px solid var(--line);
+    color:var(--muted); padding:3px 8px; border-radius:6px; }
+  .pillbar { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:16px 0 26px; }
+  .pillbar .p { font-size:12px; padding:4px 12px; border:1px solid var(--line); color:var(--muted); border-radius:999px; background:var(--panel); }
+  .links { display:flex; justify-content:center; gap:12px; margin-top:24px; flex-wrap:wrap; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><span class="dot">◆</span> Workflow Studio</div>
+    <nav>
+      <a href="index.html">▤ Dashboard</a>
+      <a href="studio.html">✦ Workflow Studio</a>
+      <a href="graph.html">⬡ Visual Builder</a>
+      <a class="active" href="start.html">▶ Get Started</a>
+    </nav>
+    <div class="foot">New here? Six steps to a live, scheduled video pipeline.</div>
+  </aside>
+  <main>
+    <section class="hero">
+      <h1>Ship AI videos on autopilot — for free</h1>
+      <p>Bring an LLM key. Push to GitHub. The engine handles research, scripting,
+      voice, images, video assembly, SEO and publishing on schedule. No server, no DB.</p>
+      <div class="pillbar">
+        <span class="p">🆓 Free except LLM tokens</span>
+        <span class="p">🧠 Agentic planner</span>
+        <span class="p">⬡ n8n-style graph builder</span>
+        <span class="p">🎬 Video-native (ffmpeg)</span>
+        <span class="p">🛡 Safety + budget breaker</span>
+      </div>
+    </section>
+
+    <div class="grid3">
+      <div class="step"><span class="n">1</span><h3>Get a Gemini API key</h3>
+        <p>Free tier is enough to start. Other LLMs (Claude / OpenAI) are pluggable.</p>
+        <a class="btn" target="_blank" href="https://aistudio.google.com/apikey">Open Google AI Studio ↗</a></div>
+
+      <div class="step"><span class="n">2</span><h3>YouTube OAuth (5 min)</h3>
+        <p>Enable YouTube Data API v3, create a Desktop OAuth client, then run locally:</p>
+        <pre><button class="copy" data-c="python scripts/youtube_auth.py client_secret.json">copy</button>python scripts/youtube_auth.py client_secret.json</pre>
+        <p style="margin-top:8px">Saves three values to paste as repo secrets.</p></div>
+
+      <div class="step"><span class="n">3</span><h3>Push to GitHub</h3>
+        <p>Create a private repo, then:</p>
+        <pre><button class="copy" data-c="git remote add origin https://github.com/YOU/REPO.git
+git push -u origin main">copy</button>git remote add origin https://github.com/YOU/REPO.git
+git push -u origin main</pre></div>
+
+      <div class="step"><span class="n">4</span><h3>Add secrets</h3>
+        <p>Repo · Settings · Secrets and variables · Actions · New repository secret:</p>
+        <pre>GEMINI_API_KEY
+YOUTUBE_CLIENT_ID
+YOUTUBE_CLIENT_SECRET
+YOUTUBE_REFRESH_TOKEN
+ADMIN_USERNAME   (optional — locks the editor)
+ADMIN_PASSWORD   (optional — PBKDF2-hashed at deploy)</pre></div>
+
+      <div class="step"><span class="n">5</span><h3>Enable the dashboard</h3>
+        <p>Repo · Settings · Pages · Source: <strong>GitHub Actions</strong>. The dashboard you're viewing right now is automatically deployed.</p></div>
+
+      <div class="step"><span class="n">6</span><h3>Safe first run</h3>
+        <p>Actions · video-workflow · Run workflow · set <code>dry_run = true</code>. Should turn green and produce a placeholder MP4. Then run again with <code>dry_run = false</code> — uploads as <strong>unlisted</strong>. Verify, then flip privacy to <code>public</code> in the workflow JSON.</p></div>
+    </div>
+
+    <div class="card" style="margin-top:30px">
+      <strong>What runs after that</strong>
+      <p class="muted" style="margin-top:8px">Every 30 minutes a dispatcher checks <code>config/schedules.yaml</code> and runs any due workflow (default: three videos per day at 06:00 / 12:00 / 18:00 UTC). All metrics show up live on the dashboard. Edit workflows, providers, prompts, and schedules from the Studio &amp; Visual Builder — changes commit back to the repo via your fine-grained token.</p>
+    </div>
+
+    <div class="links">
+      <a class="btn primary" href="index.html">Go to Dashboard</a>
+      <a class="btn" href="studio.html">Open Workflow Studio</a>
+      <a class="btn" href="graph.html">Open Visual Builder</a>
+    </div>
+  </main>
+</div>
+<script>
+document.querySelectorAll('.copy').forEach(b => b.onclick = async () => {
+  await navigator.clipboard.writeText(b.dataset.c || b.previousSibling?.textContent || '');
+  b.textContent = 'copied ✓'; setTimeout(()=>b.textContent='copy', 1400);
+});
+</script>
+</body>
+</html>
