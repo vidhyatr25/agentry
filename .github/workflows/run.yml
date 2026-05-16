@@ -2,13 +2,11 @@ name: video-workflow
 
 on:
   schedule:
-    - cron: "0 6 * * *"
-    - cron: "0 12 * * *"
-    - cron: "0 18 * * *"
+    - cron: "*/30 * * * *"
   workflow_dispatch:
     inputs:
       workflow_file:
-        description: Workflow JSON under workflows/
+        description: Run one workflow now (ignores schedule)
         default: workflows/kids_video_youtube.json
         required: true
       dry_run:
@@ -43,7 +41,20 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run workflow
+      - name: Dispatch due workflows (scheduled)
+        if: github.event_name == 'schedule'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python -m src.cli scheduler --window 35
+
+      - name: Run one workflow (manual)
+        if: github.event_name == 'workflow_dispatch'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -53,18 +64,24 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
-          python -m src.cli run \
-            "${{ github.event.inputs.workflow_file || 'workflows/kids_video_youtube.json' }}" \
+          python -m src.cli run "${{ github.event.inputs.workflow_file }}" \
             ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
 
-      - name: Persist stats
+      - name: Build dashboard auth from secrets
+        if: always()
+        env:
+          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: python scripts/gen_auth.py
+
+      - name: Persist state
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add state site/data
           if ! git diff --cached --quiet; then
-            git commit -m "chore: update stats [skip ci]"
+            git commit -m "chore: update state [skip ci]"
             git push
           fi
 
