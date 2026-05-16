@@ -32,6 +32,7 @@
     "publish",
     "record_stats",
     "research_trends",
+    "safety_gate",
     "synthesize_voice",
     "write_script"
   ]

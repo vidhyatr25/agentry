@@ -2,7 +2,7 @@ import time
 import traceback
 
 from .context import Context
-from .errors import StepError, WorkflowError
+from .errors import BudgetError, StepError, WorkflowError
 from .factory import build_step
 
 
@@ -37,6 +37,9 @@ class WorkflowRunner:
         runtime = self.ctx.settings.get("runtime", {})
         retries = int(runtime.get("retries", 1))
         backoff = int(runtime.get("retry_backoff_sec", 5))
+        budget = self.ctx.settings.get("budget", {})
+        max_cost = float(budget.get("max_cost_usd", 0) or 0)
+        max_tokens = int(budget.get("max_tokens", 0) or 0)
         result = {
             "workflow": self.workflow.get("name"),
             "started_at": time.time(),
@@ -84,6 +87,13 @@ class WorkflowRunner:
                     result["ended_at"] = time.time()
                     result["totals"] = self.ctx.telemetry.totals()
                     raise StepError(f"step '{label}' failed: {msg}") from exc
+            breach = self.ctx.telemetry.over_budget(max_cost, max_tokens)
+            if breach:
+                result["status"] = "aborted_budget"
+                result["ended_at"] = time.time()
+                result["totals"] = self.ctx.telemetry.totals()
+                self.ctx.logger.error(f"budget breached after '{label}': {breach}")
+                raise BudgetError(breach)
         result["status"] = "ok"
         result["ended_at"] = time.time()
         result["totals"] = self.ctx.telemetry.totals()

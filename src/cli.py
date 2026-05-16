@@ -68,9 +68,16 @@ def _execute_workflow(workflow_path, dry_run, settings_path, workdir_root, state
     try:
         result = runner.run()
     except Exception as exc:
-        status = "error"
-        result = {"workflow": workflow["name"], "status": "error", "error": secrets.mask(str(exc))}
-        logger.error(secrets.mask(str(exc)))
+        from .core.errors import BudgetError, SafetyError
+
+        status = "aborted" if isinstance(exc, (BudgetError, SafetyError)) else "error"
+        result = {
+            "workflow": workflow["name"],
+            "status": status,
+            "error": secrets.mask(str(exc)),
+            "reason": type(exc).__name__,
+        }
+        logger.error(f"{type(exc).__name__}: {secrets.mask(str(exc))}")
     finally:
         telemetry.persist(state_dir / "usage.json")
         runs_file = state_dir / "runs.json"

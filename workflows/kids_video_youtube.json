@@ -125,6 +125,15 @@
       }
     },
     {
+      "type": "safety_gate",
+      "params": {
+        "llm": "llm_default",
+        "audience": "kids aged 4-8",
+        "system": "You are a strict child-safety content reviewer.",
+        "prompt": "Audience: {{audience}}. Review this content for safety, age-appropriateness and brand risk.\nTitle: {{title}}\nScript: {{script}}\nReject anything scary, violent, sexual, hateful, unsafe, deceptive, or impersonating real brands/people. Respond strictly as JSON."
+      }
+    },
+    {
       "type": "publish",
       "params": { "publisher": "publisher_default" }
     },
