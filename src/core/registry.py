@@ -40,3 +40,7 @@ def provider(kind, name):
 
 def step(name):
     return registry.register("step", name)
+
+
+def tool(name):
+    return registry.register("tool", name)

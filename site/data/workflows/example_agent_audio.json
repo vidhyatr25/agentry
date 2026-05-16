@@ -1,0 +1,29 @@
+{
+  "name": "example_agent_audio",
+  "description": "Agentic mode demo: an LLM planner selects free audio tools to build and normalize an audio bed. Proves the tool registry + agent loop.",
+  "providers": {
+    "llm_default": {
+      "kind": "llm",
+      "provider": "gemini",
+      "model": "gemini-2.0-flash",
+      "options": { "api_key": "${GEMINI_API_KEY}", "temperature": 0.4 }
+    }
+  },
+  "steps": [
+    {
+      "type": "agent",
+      "params": {
+        "llm": "llm_default",
+        "goal": "Create a short, loudness-normalized audio bed for a video.",
+        "allowed_tools": ["audio.silence", "audio.normalize", "audio.concat", "audio.mix"],
+        "max_steps": 5,
+        "system": "You are an automation planner. Use only listed tools, prefer free ones, output strict JSON.",
+        "prompt": "Goal: {{goal}}\n\nAvailable tools:\n{{tools}}\n\nContext keys: {{context_keys}}\nReturn JSON {\"plan\":[{\"tool\":name,\"args\":{},\"save_as\":key}]}. Keep it minimal."
+      }
+    },
+    {
+      "type": "record_stats",
+      "params": { "state_dir": "state" }
+    }
+  ]
+}
