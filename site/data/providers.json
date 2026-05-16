@@ -1,0 +1,38 @@
+{
+  "provider:image": [
+    "gemini_image",
+    "pollinations"
+  ],
+  "provider:llm": [
+    "claude",
+    "gemini",
+    "openai"
+  ],
+  "provider:publisher": [
+    "facebook",
+    "instagram",
+    "local",
+    "tiktok",
+    "youtube"
+  ],
+  "provider:tts": [
+    "edge_tts",
+    "gtts"
+  ],
+  "provider:video": [
+    "ffmpeg_slideshow",
+    "replicate"
+  ],
+  "step": [
+    "assemble_video",
+    "build_visual_prompts",
+    "generate_images",
+    "optimize_metadata",
+    "pick_subject",
+    "publish",
+    "record_stats",
+    "research_trends",
+    "synthesize_voice",
+    "write_script"
+  ]
+}
