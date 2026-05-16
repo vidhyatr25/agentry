@@ -24,6 +24,7 @@
     "replicate"
   ],
   "step": [
+    "agent",
     "assemble_video",
     "build_visual_prompts",
     "generate_images",
@@ -35,5 +36,11 @@
     "safety_gate",
     "synthesize_voice",
     "write_script"
+  ],
+  "tool": [
+    "audio.concat",
+    "audio.mix",
+    "audio.normalize",
+    "audio.silence"
   ]
 }

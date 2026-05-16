@@ -46,6 +46,9 @@ def _sync_site(state_dir, site_data):
             continue
     (wf_out / "index.json").write_text(json.dumps(index, indent=2))
     (site_data / "providers.json").write_text(json.dumps(registry.snapshot(), indent=2))
+    from .core.tool import tools_manifest
+
+    (site_data / "tools.json").write_text(json.dumps(tools_manifest(), indent=2))
     for cfg in ("schedules.yaml", "settings.yaml"):
         src = ROOT / "config" / cfg
         if src.exists():

@@ -1,5 +1,11 @@
 [
   {
+    "file": "example_agent_audio.json",
+    "name": "example_agent_audio",
+    "description": "Agentic mode demo: an LLM planner selects free audio tools to build and normalize an audio bed. Proves the tool registry + agent loop.",
+    "schedule": null
+  },
+  {
     "file": "example_instagram_reel.json",
     "name": "example_instagram_reel",
     "description": "Same engine, different config: proves zero-code reuse for a new platform/workflow.",
