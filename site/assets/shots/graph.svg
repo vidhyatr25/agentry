@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" font-family="-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a0c10"/><stop offset="1" stop-color="#11151c"/></linearGradient>
+    <linearGradient id="brand3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b8cff"/><stop offset="1" stop-color="#7c5cff"/></linearGradient>
+    <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#1a2130"/></pattern>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#46506a"/></marker>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg3)"/>
+  <rect x="0" y="0" width="248" height="720" fill="#11151c" stroke="#232a36"/>
+  <rect x="20" y="24" width="30" height="30" rx="9" fill="url(#brand3)"/>
+  <text x="58" y="44" fill="#e8edf4" font-size="15" font-weight="700">Workflow Studio</text>
+  <g font-size="13" fill="#8b97a8">
+    <text x="32" y="103">▤ Dashboard</text>
+    <text x="32" y="143">✦ Workflow Studio</text>
+    <rect x="14" y="160" width="220" height="38" rx="10" fill="#161b24"/>
+    <text x="32" y="183" fill="#e8edf4">⬡ Visual Builder</text>
+    <text x="32" y="223">⏱ Schedules</text>
+  </g>
+  <text x="282" y="56" fill="#e8edf4" font-size="22" font-weight="700">Visual Builder</text>
+  <text x="282" y="78" fill="#8b97a8" font-size="13">Drag nodes, wire dependencies, branch with conditions</text>
+  <!-- toolbar -->
+  <g>
+    <rect x="282" y="100" width="170" height="34" rx="9" fill="#0b0f15" stroke="#232a36"/>
+    <text x="296" y="122" fill="#e8edf4" font-size="13">example_graph ▾</text>
+    <rect x="462" y="100" width="80" height="34" rx="9" fill="#161b24" stroke="#232a36"/>
+    <text x="486" y="122" fill="#e8edf4" font-size="13">Open</text>
+    <rect x="552" y="100" width="120" height="34" rx="9" fill="#0b0f15" stroke="#232a36"/>
+    <text x="566" y="122" fill="#e8edf4" font-size="13">step:agent ▾</text>
+    <rect x="682" y="100" width="106" height="34" rx="9" fill="#161b24" stroke="#232a36"/>
+    <text x="699" y="122" fill="#e8edf4" font-size="13">+ Add node</text>
+    <rect x="798" y="100" width="160" height="34" rx="9" fill="#161b24" stroke="#232a36"/>
+    <text x="816" y="122" fill="#e8edf4" font-size="13">⤳ Connect mode: ON</text>
+    <rect x="990" y="100" width="180" height="34" rx="9" fill="url(#brand3)"/>
+    <text x="1006" y="122" fill="#fff" font-size="13" font-weight="600">Save graph to GitHub</text>
+  </g>
+  <!-- canvas -->
+  <rect x="282" y="150" width="888" height="540" rx="14" fill="url(#dots)" stroke="#232a36"/>
+  <!-- nodes -->
+  <g>
+    <!-- research -->
+    <rect x="312" y="200" width="190" height="68" rx="12" fill="#161b24" stroke="#232a36"/>
+    <text x="326" y="228" fill="#e8edf4" font-size="13" font-weight="600">research</text>
+    <text x="326" y="248" fill="#8b97a8" font-size="11" font-family="ui-monospace,Menlo">research_trends</text>
+    <!-- subject -->
+    <rect x="562" y="200" width="190" height="68" rx="12" fill="#161b24" stroke="#232a36"/>
+    <text x="576" y="228" fill="#e8edf4" font-size="13" font-weight="600">subject</text>
+    <text x="576" y="248" fill="#8b97a8" font-size="11" font-family="ui-monospace,Menlo">pick_subject</text>
+    <!-- script -->
+    <rect x="812" y="200" width="190" height="68" rx="12" fill="#161b24" stroke="#232a36"/>
+    <text x="826" y="228" fill="#e8edf4" font-size="13" font-weight="600">script</text>
+    <text x="826" y="248" fill="#8b97a8" font-size="11" font-family="ui-monospace,Menlo">write_script</text>
+    <!-- visuals -->
+    <rect x="812" y="320" width="190" height="68" rx="12" fill="#161b24" stroke="#232a36"/>
+    <text x="826" y="348" fill="#e8edf4" font-size="13" font-weight="600">visuals</text>
+    <text x="826" y="368" fill="#8b97a8" font-size="11" font-family="ui-monospace,Menlo">build_visual_prompts</text>
+    <!-- voice -->
+    <rect x="562" y="320" width="190" height="68" rx="12" fill="#161b24" stroke="#232a36"/>
+    <text x="576" y="348" fill="#e8edf4" font-size="13" font-weight="600">voice</text>
+    <text x="576" y="368" fill="#8b97a8" font-size="11" font-family="ui-monospace,Menlo">synthesize_voice</text>
+    <!-- images -->
+    <rect x="562" y="440" width="190" height="68" rx="12" fill="#161b24" stroke="#232a36"/>
+    <text x="576" y="468" fill="#e8edf4" font-size="13" font-weight="600">images</text>
+    <text x="576" y="488" fill="#8b97a8" font-size="11" font-family="ui-monospace,Menlo">generate_images</text>
+    <!-- video -->
+    <rect x="312" y="380" width="190" height="68" rx="12" fill="#161b24" stroke="#5b8cff" stroke-width="2.5"/>
+    <text x="326" y="408" fill="#e8edf4" font-size="13" font-weight="600">video</text>
+    <text x="326" y="428" fill="#8b97a8" font-size="11" font-family="ui-monospace,Menlo">assemble_video</text>
+    <!-- safety -->
+    <rect x="812" y="500" width="190" height="68" rx="12" fill="#161b24" stroke="#232a36"/>
+    <text x="826" y="528" fill="#e8edf4" font-size="13" font-weight="600">safety  ⌁</text>
+    <text x="826" y="548" fill="#8b97a8" font-size="11" font-family="ui-monospace,Menlo">safety_gate</text>
+    <!-- publish -->
+    <rect x="562" y="560" width="190" height="68" rx="12" fill="#161b24" stroke="#232a36"/>
+    <text x="576" y="588" fill="#e8edf4" font-size="13" font-weight="600">publish  ⌁</text>
+    <text x="576" y="608" fill="#8b97a8" font-size="11" font-family="ui-monospace,Menlo">publish</text>
+  </g>
+  <!-- edges -->
+  <g stroke="#46506a" stroke-width="2" fill="none" marker-end="url(#arr)">
+    <path d="M502 234 C 540 234, 530 234, 562 234"/>
+    <path d="M752 234 C 790 234, 780 234, 812 234"/>
+    <path d="M907 268 C 907 290, 907 300, 907 320"/>
+    <path d="M812 354 C 770 354, 760 354, 752 354"/>
+    <path d="M657 388 C 657 420, 657 430, 657 440"/>
+    <path d="M562 354 C 530 354, 530 384, 502 414"/>
+    <path d="M562 474 C 530 474, 530 414, 502 414"/>
+    <path d="M907 388 C 907 460, 907 500, 907 500"/>
+    <path d="M812 534 C 770 534, 760 594, 752 594"/>
+    <path d="M562 594 C 530 594, 530 414, 502 414"/>
+  </g>
+  <!-- selected indicator -->
+  <text x="312" y="690" fill="#8b97a8" font-size="11">Selected: <tspan fill="#5b8cff" font-weight="600">video</tspan> · click connect mode to wire edges</text>
+</svg>
