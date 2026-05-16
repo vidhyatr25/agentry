@@ -1,0 +1,29 @@
+services:
+  web:
+    build: .
+    image: workflow-studio:latest
+    container_name: workflow-studio-web
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./state:/app/state
+      - ./site/data:/app/site/data
+    restart: unless-stopped
+
+  worker:
+    image: workflow-studio:latest
+    depends_on:
+      - web
+    container_name: workflow-studio-worker
+    env_file:
+      - .env
+    volumes:
+      - ./state:/app/state
+      - ./site/data:/app/site/data
+      - ./runs:/app/runs
+    command: >
+      sh -c "while true; do
+        python -m src.cli scheduler --window 35 || true;
+        sleep ${WFS_TICK_SECONDS:-1800};
+      done"
+    restart: unless-stopped

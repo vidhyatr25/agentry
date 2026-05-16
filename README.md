@@ -87,6 +87,26 @@ locally — no keys, no API calls, no spend. Open `site/index.html` for the
 dashboard, `site/studio.html` for the editor, `site/graph.html` for the
 visual builder.
 
+## Run with Docker (self-host, two apps)
+
+A lightweight Compose stack with **two services** sharing volumes:
+
+- `web` → static dashboard, Studio, Visual Builder on **port 8000**
+- `worker` → scheduler dispatcher that runs due workflows on a loop
+
+```bash
+cp .env.example .env       # fill in keys; .env stays on your host, never in the image
+docker compose build
+docker compose up -d
+open http://localhost:8000  # dashboard
+docker compose logs -f worker
+docker compose down
+```
+
+Image is `python:3.12-slim` + `ffmpeg` (~250 MB). Secrets are injected from
+`.env` at runtime — not baked into the image. State and stats persist in the
+host `./state` and `./site/data` volumes. Full docs in [docs/DOCKER.md](docs/DOCKER.md).
+
 ## Deploy free on GitHub (one-time, ~10 min)
 
 Full step-by-step in [DEPLOY.md](DEPLOY.md). TL;DR:
