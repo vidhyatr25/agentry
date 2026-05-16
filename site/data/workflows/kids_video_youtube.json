@@ -1,0 +1,118 @@
+{
+  "name": "kids_video_youtube",
+  "description": "Daily AI-generated kids short: research -> story -> voice -> images -> video -> SEO -> YouTube.",
+  "schedule": "0 6,12,18 * * *",
+  "video": {
+    "format": "shorts",
+    "aspect_ratio": "9:16",
+    "resolution": [1080, 1920],
+    "fps": 30,
+    "max_duration_sec": 60
+  },
+  "providers": {
+    "llm_default": {
+      "kind": "llm",
+      "provider": "gemini",
+      "model": "gemini-2.0-flash",
+      "options": {
+        "api_key": "${GEMINI_API_KEY}",
+        "temperature": 0.9,
+        "max_tokens": 2048
+      }
+    },
+    "tts_default": {
+      "kind": "tts",
+      "provider": "edge_tts",
+      "options": {
+        "voice": "en-US-AnaNeural",
+        "rate": "+6%"
+      }
+    },
+    "image_default": {
+      "kind": "image",
+      "provider": "pollinations",
+      "options": {
+        "model": "flux"
+      }
+    },
+    "video_default": {
+      "kind": "video",
+      "provider": "ffmpeg_slideshow",
+      "options": {
+        "zoom": 0.0012,
+        "music_volume": 0.1
+      }
+    },
+    "publisher_default": {
+      "kind": "publisher",
+      "provider": "youtube",
+      "options": {
+        "client_id": "${YOUTUBE_CLIENT_ID}",
+        "client_secret": "${YOUTUBE_CLIENT_SECRET}",
+        "refresh_token": "${YOUTUBE_REFRESH_TOKEN}",
+        "privacy": "public",
+        "made_for_kids": true,
+        "category_id": 24
+      }
+    }
+  },
+  "steps": [
+    {
+      "type": "research_trends",
+      "params": {
+        "llm": "llm_default",
+        "audience": "kids aged 4-8",
+        "theme": "fun educational stories about nature, animals, space and kindness",
+        "count": 6
+      }
+    },
+    {
+      "type": "pick_subject",
+      "params": { "llm": "llm_default", "audience": "kids aged 4-8" }
+    },
+    {
+      "type": "write_script",
+      "params": { "llm": "llm_default", "scene_count": 7, "words_target": 140 }
+    },
+    {
+      "type": "build_visual_prompts",
+      "params": {
+        "llm": "llm_default",
+        "style": "bright 3D Pixar-style cartoon, soft cinematic lighting, rounded shapes, cheerful palette, child friendly"
+      }
+    },
+    {
+      "type": "synthesize_voice",
+      "params": { "tts": "tts_default" }
+    },
+    {
+      "type": "generate_images",
+      "params": { "image": "image_default" }
+    },
+    {
+      "type": "assemble_video",
+      "params": {
+        "video": "video_default",
+        "subtitles": true,
+        "music": "assets/music/calm.mp3"
+      }
+    },
+    {
+      "type": "optimize_metadata",
+      "params": {
+        "llm": "llm_default",
+        "platform": "youtube_shorts",
+        "max_tags": 15,
+        "keyword_seed": ["kids learning", "story time", "educational cartoon", "kids shorts"]
+      }
+    },
+    {
+      "type": "publish",
+      "params": { "publisher": "publisher_default" }
+    },
+    {
+      "type": "record_stats",
+      "params": { "state_dir": "state" }
+    }
+  ]
+}

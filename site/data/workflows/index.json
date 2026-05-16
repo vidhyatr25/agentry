@@ -1,0 +1,14 @@
+[
+  {
+    "file": "example_instagram_reel.json",
+    "name": "example_instagram_reel",
+    "description": "Same engine, different config: proves zero-code reuse for a new platform/workflow.",
+    "schedule": "0 15 * * *"
+  },
+  {
+    "file": "kids_video_youtube.json",
+    "name": "kids_video_youtube",
+    "description": "Daily AI-generated kids short: research -> story -> voice -> images -> video -> SEO -> YouTube.",
+    "schedule": "0 6,12,18 * * *"
+  }
+]

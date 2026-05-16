@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workflow Studio — Live Stats</title>
+<style>
+  :root { --bg:#0d1117; --card:#161b22; --line:#30363d; --txt:#e6edf3; --muted:#8b949e; --accent:#3fb950; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--txt); }
+  header { padding:24px 20px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+  h1 { font-size:20px; margin:0; }
+  nav a { color:var(--muted); text-decoration:none; margin-left:18px; font-size:14px; }
+  nav a:hover { color:var(--txt); }
+  main { max-width:1080px; margin:0 auto; padding:24px 20px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; }
+  .kpi { font-size:30px; font-weight:700; }
+  .label { color:var(--muted); font-size:13px; margin-top:4px; }
+  h2 { font-size:15px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin:32px 0 12px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th,td { text-align:left; padding:10px 8px; border-bottom:1px solid var(--line); }
+  th { color:var(--muted); font-weight:600; }
+  a.vid { color:var(--accent); text-decoration:none; }
+  .pill { font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); }
+  .ok { color:var(--accent); border-color:var(--accent); }
+  .err { color:#f85149; border-color:#f85149; }
+  footer { color:var(--muted); font-size:12px; text-align:center; padding:30px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🎬 Workflow Studio</h1>
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a href="config.html">Workflows &amp; Config</a>
+  </nav>
+</header>
+<main>
+  <div class="grid" id="kpis"></div>
+  <h2>Tokens by provider</h2>
+  <div class="card"><table id="providers"><thead><tr><th>Provider</th><th>Calls</th><th>Tokens</th><th>Cost (USD)</th></tr></thead><tbody></tbody></table></div>
+  <h2>Recently published</h2>
+  <div class="card"><table id="recent"><thead><tr><th>Title</th><th>Platform</th><th>Status</th><th>When</th><th>Link</th></tr></thead><tbody></tbody></table></div>
+  <footer id="foot">Loading…</footer>
+</main>
+<script>
+async function j(p){ try{ const r=await fetch(p+'?t='+Date.now()); return await r.json(); }catch(e){ return null; } }
+function when(ts){ if(!ts) return '—'; const d=new Date(ts*1000); return d.toLocaleString(); }
+(async ()=>{
+  const stats = await j('data/stats.json') || {};
+  const usage = await j('data/usage.json') || [];
+  const kpis = [
+    ['Videos published', stats.videos_published ?? 0],
+    ['Total runs', stats.total_runs ?? 0],
+    ['Tokens used', (stats.total_tokens ?? 0).toLocaleString()],
+    ['Total cost', '$' + (stats.total_cost_usd ?? 0).toFixed(4)]
+  ];
+  document.getElementById('kpis').innerHTML = kpis.map(k=>
+    `<div class="card"><div class="kpi">${k[1]}</div><div class="label">${k[0]}</div></div>`).join('');
+
+  const agg = {};
+  usage.forEach(run => {
+    const bp = (run.totals||{}).by_provider || {};
+    Object.entries(bp).forEach(([name,v]) => {
+      const a = agg[name] || {calls:0,total_tokens:0,cost_usd:0};
+      a.calls += v.calls||0; a.total_tokens += v.total_tokens||0; a.cost_usd += v.cost_usd||0;
+      agg[name] = a;
+    });
+  });
+  document.querySelector('#providers tbody').innerHTML = Object.entries(agg).map(([n,v])=>
+    `<tr><td>${n}</td><td>${v.calls}</td><td>${v.total_tokens.toLocaleString()}</td><td>$${v.cost_usd.toFixed(5)}</td></tr>`
+  ).join('') || '<tr><td colspan="4">No usage yet</td></tr>';
+
+  const recent = stats.recent || [];
+  document.querySelector('#recent tbody').innerHTML = recent.map(r=>{
+    const cls = (r.status==='published'||r.status==='saved')?'ok':'err';
+    const link = r.url ? `<a class="vid" href="${r.url}" target="_blank">open</a>` : '—';
+    return `<tr><td>${r.title||'—'}</td><td>${r.platform||'—'}</td><td><span class="pill ${cls}">${r.status||'—'}</span></td><td>${when(r.published_at)}</td><td>${link}</td></tr>`;
+  }).join('') || '<tr><td colspan="5">Nothing published yet — first scheduled run will appear here.</td></tr>';
+
+  document.getElementById('foot').textContent = 'Last updated: ' + when(stats.updated_at) + ' · auto-refreshing';
+  setTimeout(()=>location.reload(), 120000);
+})();
+</script>
+</body>
+</html>

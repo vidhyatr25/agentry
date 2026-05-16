@@ -1,0 +1,52 @@
+{
+  "name": "example_instagram_reel",
+  "description": "Same engine, different config: proves zero-code reuse for a new platform/workflow.",
+  "schedule": "0 15 * * *",
+  "video": {
+    "format": "reel",
+    "aspect_ratio": "9:16",
+    "resolution": [1080, 1920],
+    "fps": 30,
+    "max_duration_sec": 45
+  },
+  "providers": {
+    "llm_default": {
+      "kind": "llm",
+      "provider": "claude",
+      "model": "claude-sonnet-4-6",
+      "options": { "api_key": "${ANTHROPIC_API_KEY}", "temperature": 0.8 }
+    },
+    "tts_default": {
+      "kind": "tts",
+      "provider": "gtts",
+      "options": { "lang": "en" }
+    },
+    "image_default": {
+      "kind": "image",
+      "provider": "pollinations",
+      "options": { "model": "flux" }
+    },
+    "video_default": {
+      "kind": "video",
+      "provider": "ffmpeg_slideshow",
+      "options": {}
+    },
+    "publisher_default": {
+      "kind": "publisher",
+      "provider": "instagram",
+      "options": {}
+    }
+  },
+  "steps": [
+    { "type": "research_trends", "params": { "llm": "llm_default", "audience": "general", "count": 5 } },
+    { "type": "pick_subject", "params": { "llm": "llm_default" } },
+    { "type": "write_script", "params": { "llm": "llm_default", "scene_count": 5, "words_target": 90 } },
+    { "type": "build_visual_prompts", "params": { "llm": "llm_default", "style": "clean modern flat illustration" } },
+    { "type": "synthesize_voice", "params": { "tts": "tts_default" } },
+    { "type": "generate_images", "params": { "image": "image_default" } },
+    { "type": "assemble_video", "params": { "video": "video_default", "subtitles": true } },
+    { "type": "optimize_metadata", "params": { "llm": "llm_default", "platform": "instagram" } },
+    { "type": "publish", "params": { "publisher": "publisher_default" } },
+    { "type": "record_stats", "params": { "state_dir": "state" } }
+  ]
+}
