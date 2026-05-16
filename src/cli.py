@@ -176,7 +176,9 @@ def cmd_scheduler(args):
 def cmd_validate(args):
     load_plugins()
     workflow = validate_workflow(load_json(args.workflow))
-    print(f"valid workflow: {workflow['name']} ({len(workflow['steps'])} steps)")
+    units = workflow.get("nodes") or workflow.get("steps") or []
+    kind = "nodes" if workflow.get("nodes") else "steps"
+    print(f"valid workflow: {workflow['name']} ({len(units)} {kind})")
     return 0
 
 
@@ -220,7 +222,8 @@ def cmd_doctor(args):
             check(f"python dep: {mod}", False, "pip install -r requirements.txt")
 
     workflow = validate_workflow(load_json(args.workflow))
-    check(f"workflow valid: {workflow['name']}", True, f"{len(workflow['steps'])} steps")
+    _units = workflow.get("nodes") or workflow.get("steps") or []
+    check(f"workflow valid: {workflow['name']}", True, f"{len(_units)} units")
 
     secrets = SecretResolver(lenient=True)
     needed = set()

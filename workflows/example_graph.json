@@ -1,0 +1,40 @@
+{
+  "name": "example_graph",
+  "description": "n8n-style DAG: nodes with ids + needs + a conditional edge. Same engine, graph mode instead of linear steps.",
+  "video": { "format": "shorts", "resolution": [1080, 1920], "fps": 30 },
+  "providers": {
+    "llm_default": {
+      "kind": "llm", "provider": "gemini", "model": "gemini-2.0-flash",
+      "options": { "api_key": "${GEMINI_API_KEY}" }
+    },
+    "tts_default": { "kind": "tts", "provider": "edge_tts", "options": {} },
+    "image_default": { "kind": "image", "provider": "pollinations", "options": {} },
+    "video_default": { "kind": "video", "provider": "ffmpeg_slideshow", "options": {} },
+    "publisher_default": { "kind": "publisher", "provider": "local", "options": {} }
+  },
+  "nodes": [
+    { "id": "research", "type": "research_trends", "needs": [],
+      "params": { "llm": "llm_default", "audience": "kids 4-8", "count": 4 } },
+    { "id": "subject", "type": "pick_subject", "needs": ["research"],
+      "params": { "llm": "llm_default" } },
+    { "id": "script", "type": "write_script", "needs": ["subject"],
+      "params": { "llm": "llm_default", "scene_count": 4 } },
+    { "id": "visuals", "type": "build_visual_prompts", "needs": ["script"],
+      "params": { "llm": "llm_default", "style": "bright cartoon" } },
+    { "id": "voice", "type": "synthesize_voice", "needs": ["visuals"],
+      "params": { "tts": "tts_default" } },
+    { "id": "images", "type": "generate_images", "needs": ["visuals"],
+      "params": { "image": "image_default" } },
+    { "id": "video", "type": "assemble_video", "needs": ["voice", "images"],
+      "params": { "video": "video_default", "subtitles": true } },
+    { "id": "meta", "type": "optimize_metadata", "needs": ["script"],
+      "params": { "llm": "llm_default" } },
+    { "id": "safety", "type": "safety_gate", "needs": ["script", "meta"],
+      "params": { "llm": "llm_default", "audience": "kids 4-8" } },
+    { "id": "publish", "type": "publish", "needs": ["video", "meta", "safety"],
+      "when": "{{ safety.safe }}",
+      "params": { "publisher": "publisher_default" } },
+    { "id": "stats", "type": "record_stats", "needs": ["publish"],
+      "params": { "state_dir": "state" } }
+  ]
+}

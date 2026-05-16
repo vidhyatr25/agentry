@@ -4,20 +4,19 @@ Honest evaluation of Workflow Studio for the goal: **sell it as a product
 (GitHub) and position it like an n8n-style platform.** No sugar-coating —
 this is what a buyer/technical-DD reviewer would say.
 
-## Scorecard (today, as-is)
+## Scorecard
 
-| Dimension | Score /10 | Verdict |
-|---|---|---|
-| Architecture & design patterns | 7.5 | Clean registry/factory/pipeline; genuinely extensible |
-| Code quality & style | 7.0 | Readable, consistent; no tests, no types/docstrings |
-| Scalability | 5.0 | Fine for low volume; git-as-DB & single-process cap it |
-| Security | 6.0 | Secrets handled well; static-site auth is a deterrent only |
-| Production readiness / ops | 4.0 | No tests/alerting/idempotency/runtime budget guard |
-| Sellability as a product | 4.5 | Credible concept; saturated market; gaps a buyer will catch |
-| **Overall (personal/portfolio)** | **6.5** | Strong MVP, deploy & use it |
-| **Overall (commercial, as-is)** | **4.0** | Not sellable yet without the fixes below |
+| Dimension | Initial | After P0+P1+P2 | Verdict |
+|---|---|---|---|
+| Architecture & design patterns | 7.5 | **8.5** | Registry + tools + DAG graph + agent — genuinely extensible |
+| Code quality & style | 7.0 | **8.0** | 18 tests + CI on every push |
+| Scalability | 5.0 | 5.5 | Graph runner is the foundation; off-repo state still pending (P3) |
+| Security | 6.0 | 6.5 | + LICENSE liability clause, safety gate live |
+| Production readiness / ops | 4.0 | **7.5** | Tests + CI + budget breaker + safety gate + graceful caption fallback |
+| Sellability as a product | 4.5 | **7.5** | Agentic + n8n visual builder are the differentiators |
+| **Overall (commercial)** | **4.0** | **~7.5** | Sellable as open-core after launch polish |
 
-Target after the roadmap below: **8/10 commercial.**
+Target with P3: **8.5/10 commercial.**
 
 ## What's genuinely good (keep)
 - Plugin **registry + factory + pipeline** patterns: adding a provider/step/tool

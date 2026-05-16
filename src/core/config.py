@@ -72,12 +72,12 @@ def build_settings(settings_path, workflow):
 
 
 def validate_workflow(workflow):
-    for field in ("name", "steps"):
-        if field not in workflow:
-            raise ConfigError(f"workflow missing required field: {field}")
-    if not isinstance(workflow["steps"], list) or not workflow["steps"]:
-        raise ConfigError("workflow.steps must be a non-empty list")
-    for index, spec in enumerate(workflow["steps"]):
+    if "name" not in workflow:
+        raise ConfigError("workflow missing required field: name")
+    units = workflow.get("nodes") or workflow.get("steps")
+    if not isinstance(units, list) or not units:
+        raise ConfigError("workflow must define a non-empty 'steps' or 'nodes' list")
+    for index, spec in enumerate(units):
         if "type" not in spec:
-            raise ConfigError(f"step[{index}] missing 'type'")
+            raise ConfigError(f"{'node' if workflow.get('nodes') else 'step'}[{index}] missing 'type'")
     return workflow

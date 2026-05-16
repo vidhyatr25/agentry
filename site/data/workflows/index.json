@@ -6,6 +6,12 @@
     "schedule": null
   },
   {
+    "file": "example_graph.json",
+    "name": "example_graph",
+    "description": "n8n-style DAG: nodes with ids + needs + a conditional edge. Same engine, graph mode instead of linear steps.",
+    "schedule": null
+  },
+  {
     "file": "example_instagram_reel.json",
     "name": "example_instagram_reel",
     "description": "Same engine, different config: proves zero-code reuse for a new platform/workflow.",
