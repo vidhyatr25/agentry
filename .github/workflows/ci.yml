@@ -25,10 +25,19 @@ jobs:
         run: python -m pytest tests/ -q
       - name: Validate workflows
         run: |
+<<<<<<< HEAD
           for f in workflows/*.json; do python -m agentry.cli validate "$f"; done
       - name: Registry sanity
         run: python -m agentry.cli providers >/dev/null
       - name: End-to-end dry-run (real ffmpeg, no keys, no spend)
         run: |
           python -m agentry.cli run workflows/kids_video_youtube.json --dry-run
+=======
+          for f in workflows/*.json; do python -m src.cli validate "$f"; done
+      - name: Registry sanity
+        run: python -m src.cli providers >/dev/null
+      - name: End-to-end dry-run (real ffmpeg, no keys, no spend)
+        run: |
+          python -m src.cli run workflows/kids_video_youtube.json --dry-run
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
           test -f "$(ls -t runs/*/video/final.mp4 | head -1)"

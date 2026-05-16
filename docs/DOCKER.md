@@ -1,6 +1,10 @@
 # Docker — self-host the two apps
 
+<<<<<<< HEAD
 Agentry runs as a tiny two-service Compose stack on any host:
+=======
+Workflow Studio runs as a tiny two-service Compose stack on any host:
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 
 | Service  | What it does                                | Port |
 |----------|---------------------------------------------|------|
@@ -28,7 +32,11 @@ docker compose up -d
 ```
 
 - Dashboard → http://localhost:8000
+<<<<<<< HEAD
 - Agentry → http://localhost:8000/studio.html
+=======
+- Workflow Studio → http://localhost:8000/studio.html
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 - Visual Builder → http://localhost:8000/graph.html
 - Get Started → http://localhost:8000/start.html
 
@@ -38,15 +46,24 @@ docker compose ps                       # status
 docker compose logs -f worker           # tail scheduler logs
 docker compose logs -f web              # tail web logs
 docker compose restart worker           # reload after editing config/
+<<<<<<< HEAD
 docker compose exec worker python -m agentry.cli doctor
 docker compose exec worker python -m agentry.cli run workflows/kids_video_youtube.json --dry-run
+=======
+docker compose exec worker python -m src.cli doctor
+docker compose exec worker python -m src.cli run workflows/kids_video_youtube.json --dry-run
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 docker compose down                     # stop everything (data persists on host)
 ```
 
 ## 4. Trigger a workflow manually (any time)
 ```bash
 docker compose exec worker \
+<<<<<<< HEAD
   python -m agentry.cli run workflows/kids_video_youtube.json
+=======
+  python -m src.cli run workflows/kids_video_youtube.json
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 ```
 
 ## 5. Change the tick interval
@@ -73,6 +90,7 @@ Override via `.env`: `WFS_TICK_SECONDS=600`.
 If you don't want Compose, run web and worker as two `docker run` commands
 from the same image:
 ```bash
+<<<<<<< HEAD
 docker build -t agentry .
 docker run -d --name wfs-web -p 8000:8000 \
   -v "$PWD/state:/app/state" -v "$PWD/site/data:/app/site/data" \
@@ -82,4 +100,15 @@ docker run -d --name wfs-worker --env-file .env \
   -v "$PWD/state:/app/state" -v "$PWD/site/data:/app/site/data" \
   -v "$PWD/runs:/app/runs" agentry \
   sh -c 'while true; do python -m agentry.cli scheduler --window 35; sleep 1800; done'
+=======
+docker build -t workflow-studio .
+docker run -d --name wfs-web -p 8000:8000 \
+  -v "$PWD/state:/app/state" -v "$PWD/site/data:/app/site/data" \
+  workflow-studio
+
+docker run -d --name wfs-worker --env-file .env \
+  -v "$PWD/state:/app/state" -v "$PWD/site/data:/app/site/data" \
+  -v "$PWD/runs:/app/runs" workflow-studio \
+  sh -c 'while true; do python -m src.cli scheduler --window 35; sleep 1800; done'
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 ```

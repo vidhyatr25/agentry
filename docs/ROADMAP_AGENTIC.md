@@ -1,6 +1,10 @@
 # Agentic + n8n-style roadmap (cost-aware)
 
+<<<<<<< HEAD
 This is the strategic plan for evolving Agentry from a config-driven
+=======
+This is the strategic plan for evolving Workflow Studio from a config-driven
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 pipeline into a universal, agentic, low-cost automation platform — while staying
 honest about what GitHub-only hosting can and cannot do.
 

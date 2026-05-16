@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 name: agentry
 
 services:
@@ -5,6 +6,13 @@ services:
     build: .
     image: agentry:latest
     container_name: agentry-web
+=======
+services:
+  web:
+    build: .
+    image: workflow-studio:latest
+    container_name: workflow-studio-web
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
     ports:
       - "8000:8000"
     volumes:
@@ -13,10 +21,17 @@ services:
     restart: unless-stopped
 
   worker:
+<<<<<<< HEAD
     image: agentry:latest
     depends_on:
       - web
     container_name: agentry-worker
+=======
+    image: workflow-studio:latest
+    depends_on:
+      - web
+    container_name: workflow-studio-worker
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
     env_file:
       - .env
     volumes:
@@ -25,7 +40,11 @@ services:
       - ./runs:/app/runs
     command: >
       sh -c "while true; do
+<<<<<<< HEAD
         python -m agentry.cli scheduler --window 35 || true;
+=======
+        python -m src.cli scheduler --window 35 || true;
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
         sleep ${WFS_TICK_SECONDS:-1800};
       done"
     restart: unless-stopped

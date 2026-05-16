@@ -1,6 +1,10 @@
 # Changelog
 
+<<<<<<< HEAD
 All notable changes to Agentry.
+=======
+All notable changes to Workflow Studio.
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 
 ## [0.5.0] - 2026-05-16
 ### Added (P2 — n8n-style universal builder)
@@ -37,7 +41,11 @@ All notable changes to Agentry.
 - All LLM prompts externalized into workflow JSON (editable from the UI).
 - Schedule registry + 30-min dispatcher Action with exactly-once dedupe.
 - Deploy-time admin auth (PBKDF2 from GitHub Secrets, no plaintext).
+<<<<<<< HEAD
 - Redesigned professional dashboard + Agentry editor.
+=======
+- Redesigned professional dashboard + Workflow Studio editor.
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 - Agentic + n8n-style architecture roadmap; honest product assessment.
 
 ## [0.1.0] - 2026-05-16

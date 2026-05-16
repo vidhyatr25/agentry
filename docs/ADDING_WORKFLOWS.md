@@ -34,7 +34,11 @@ Drop it in `workflows/`. No code. Schema:
 - Secrets are always `${UPPER_SNAKE}` and must exist as GitHub Secrets.
 - Params support templating: `{{ data.key }}` injects a previous step's output;
   `${SECRET}` injects a secret.
+<<<<<<< HEAD
 - Validate before committing: `python -m agentry.cli validate workflows/yours.json`.
+=======
+- Validate before committing: `python -m src.cli validate workflows/yours.json`.
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 
 ## Built-in steps (the reusable library)
 `research_trends` → `pick_subject` → `write_script` → `build_visual_prompts`
@@ -53,7 +57,11 @@ Reorder, drop, or repeat them freely. Each reads/writes the shared context
 - publisher: `local` (safe default), `youtube`, `instagram`/`facebook`/`tiktok`
   (registered stubs — implement when you build those workflows)
 
+<<<<<<< HEAD
 `python -m agentry.cli providers` prints the live catalog (also at
+=======
+`python -m src.cli providers` prints the live catalog (also at
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 `site/data/providers.json` for the dashboard).
 
 ## Add a new step

@@ -1,6 +1,10 @@
 # Product Assessment & Improvement Roadmap
 
+<<<<<<< HEAD
 Honest evaluation of Agentry for the goal: **sell it as a product
+=======
+Honest evaluation of Workflow Studio for the goal: **sell it as a product
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 (GitHub) and position it like an n8n-style platform.** No sugar-coating —
 this is what a buyer/technical-DD reviewer would say.
 

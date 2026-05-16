@@ -3,11 +3,19 @@ import shutil
 
 import pytest
 
+<<<<<<< HEAD
 from agentry.core.loader import load_plugins
 from agentry.core.secrets import SecretResolver
 from agentry.core.telemetry import Telemetry
 from agentry.core.tool import build_tool, tools_manifest
 from agentry.core.workflow import WorkflowRunner
+=======
+from src.core.loader import load_plugins
+from src.core.secrets import SecretResolver
+from src.core.telemetry import Telemetry
+from src.core.tool import build_tool, tools_manifest
+from src.core.workflow import WorkflowRunner
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 
 load_plugins()
 
@@ -59,7 +67,11 @@ def test_agent_rejects_disallowed_tool():
 
 @pytest.mark.skipif(not HAS_FFMPEG, reason="ffmpeg required")
 def test_audio_silence_tool_direct(tmp_path):
+<<<<<<< HEAD
     from agentry.core.context import Context
+=======
+    from src.core.context import Context
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 
     ctx = Context({"name": "x", "steps": []}, {}, SecretResolver(environ={}),
                   Telemetry(), str(tmp_path), True, logging.getLogger("t"))

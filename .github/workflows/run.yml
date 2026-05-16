@@ -51,7 +51,11 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+<<<<<<< HEAD
         run: python -m agentry.cli scheduler --window 35
+=======
+        run: python -m src.cli scheduler --window 35
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
 
       - name: Run one workflow (manual)
         if: github.event_name == 'workflow_dispatch'
@@ -64,7 +68,11 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
+<<<<<<< HEAD
           python -m agentry.cli run "${{ github.event.inputs.workflow_file }}" \
+=======
+          python -m src.cli run "${{ github.event.inputs.workflow_file }}" \
+>>>>>>> 4f66566cb65003080ea71b565cf90c174c7c1ad0
             ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
 
       - name: Build dashboard auth from secrets
