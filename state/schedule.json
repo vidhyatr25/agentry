@@ -1,1 +1,21 @@
-{"checked_at":0,"workflows":[]}
+{
+  "checked_at": 1778988487.542502,
+  "workflows": [
+    {
+      "file": "workflows/kids_video_youtube.json",
+      "enabled": true,
+      "cron": "0 6,12,18 * * *",
+      "last_run": null,
+      "due": false,
+      "ran": false
+    },
+    {
+      "file": "workflows/example_instagram_reel.json",
+      "enabled": false,
+      "cron": "0 15 * * *",
+      "last_run": null,
+      "due": false,
+      "ran": false
+    }
+  ]
+}

@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "run_id": "kids_video_youtube-1778961060",
+    "workflow": "kids_video_youtube",
+    "status": "error",
+    "dry_run": false,
+    "at": 1778961060.479739,
+    "totals": {
+      "run_id": "kids_video_youtube-1778961060",
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "cost_usd": 0,
+      "duration_sec": 0.0,
+      "by_provider": {},
+      "calls": 0
+    }
+  }
+]
