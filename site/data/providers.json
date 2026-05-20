@@ -1,1 +1,46 @@
-{}
+{
+  "provider:image": [
+    "gemini_image",
+    "pollinations"
+  ],
+  "provider:llm": [
+    "claude",
+    "gemini",
+    "openai"
+  ],
+  "provider:publisher": [
+    "facebook",
+    "instagram",
+    "local",
+    "tiktok",
+    "youtube"
+  ],
+  "provider:tts": [
+    "edge_tts",
+    "gtts"
+  ],
+  "provider:video": [
+    "ffmpeg_slideshow",
+    "replicate"
+  ],
+  "step": [
+    "agent",
+    "assemble_video",
+    "build_visual_prompts",
+    "generate_images",
+    "optimize_metadata",
+    "pick_subject",
+    "publish",
+    "record_stats",
+    "research_trends",
+    "safety_gate",
+    "synthesize_voice",
+    "write_script"
+  ],
+  "tool": [
+    "audio.concat",
+    "audio.mix",
+    "audio.normalize",
+    "audio.silence"
+  ]
+}
