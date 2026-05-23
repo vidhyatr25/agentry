@@ -1,14 +1,13 @@
 {
-  "checked_at": 1779559320.6595502,
+  "checked_at": 1779565444.355382,
   "workflows": [
     {
       "file": "workflows/kids_video_youtube.json",
       "enabled": true,
       "cron": "0 6,12,18 * * *",
-      "last_run": 1779537600.0,
-      "due": true,
-      "ran": true,
-      "status": "error"
+      "last_run": 1779559200.0,
+      "due": false,
+      "ran": false
     },
     {
       "file": "workflows/example_instagram_reel.json",
