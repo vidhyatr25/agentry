@@ -154,5 +154,18 @@
       "calls": 0
     },
     "events": []
+  },
+  {
+    "totals": {
+      "run_id": "kids_video_youtube-1779906406",
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "cost_usd": 0,
+      "duration_sec": 0.0,
+      "by_provider": {},
+      "calls": 0
+    },
+    "events": []
   }
 ]
